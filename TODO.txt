@@ -1,0 +1,69 @@
+
+
+TODO
+====
+
+refactoring
+-----------
+
+### any
+ - getDmem range check
+ - toLower (flag, inst name,...)
+ - idb space parser
+ - shift instruction name. << direction.
+
+
+
+
+
+error
+-----
+
+(idb) x *2
+*** Exception: Prelude.read: no parse
+
+(idb) x 10000
+*** Exception: Ix{Int}.index: Index (10000) out of range ((0,7))
+
+(idb) x/100 -
+*** Exception: Prelude.read: no parse
+
+(idb) watch r5 > 4
+idb.hs: strToGReg"r5"
+
+(idb) delete  2     ; space!
+
+
+
+document
+--------
+ - runhaskell examples/idb.hs examples/test0.asm < zz  (script idb)
+
+
+package
+-------
+ - HLint
+ - HSpec, HUnit
+ - QuickCheck
+ - Travis-CI README.md (https://github.com/philopon/apiary)
+
+
+
+
+done
+----
+ x show; R0 .. R7 : [...  FC .. FZ : 
+ x cabal auto test
+ x profiler file input
+### gitignore
+ - refactoring Debugger.hs, InteractiveDebugger.hs
+### config
+ - crlf
+ - gitignore
+### refactoring "show CpuState"
+ - limit exoprt. for haddock
+ - getDmem and any, api
+
+
+
+
