@@ -65,5 +65,6 @@ Test-suite hunit
   main-is:           hunit.hs
   build-depends:     base,
                      HUnit >= 1.2,
+                     bytestring >=0.10 && <0.11,
                      processor-creative-kit
 

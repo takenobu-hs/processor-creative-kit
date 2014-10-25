@@ -19,6 +19,8 @@ module Processor.Tool.Debugger (
 
 import Control.Monad.State
 import qualified Data.ByteString.Char8 as B
+import Text.Printf (printf)
+import Data.List (intercalate)
 
 import Processor.Core.Instruction
 import Processor.Core.Memory
@@ -108,7 +110,6 @@ data DbgTrc = TrcInst   -- ^ trace instructions
             | TrcBranch -- ^ trace branch information
             | TrcLoad   -- ^ trace memory load
             | TrcStore  -- ^ trace memory store
---          | TrcDmem
             deriving (Show, Eq)
 
 -- pre/post trace
@@ -129,27 +130,25 @@ traceOne TrcCall   = traceCall
 traceOne TrcBranch = traceBranch
 traceOne TrcLoad   = traceLoad
 traceOne TrcStore  = traceStore
--- traceOne _         = return ""
 
 
--- TODO: reform
 -- each trace
 tracePc :: EvalCpu TrcLog
 tracePc = do pc <- readPc
-             return $ B.pack $ concat ["TrcPc:\tpc : ", (show pc), "\n"]
+             return $ B.pack $ concat ["TrcPc:\tpc : ", (pprHex pc), "\n"]
 
 traceInst :: EvalCpu TrcLog
 traceInst = do pc <- readPc
                inst <- fetchInst
-               return $ B.pack $ concat [ "TrcInst:\tpc : ",  (show pc), "\t"
+               return $ B.pack $ concat [ "TrcInst:\tpc : ",  (pprHex pc), "\t"
                                         , (show inst), "\n\n"]
 
 traceReg :: EvalCpu TrcLog
 traceReg = do stat <- get
               return $ B.pack $ concat
                     [ "TrcReg:\n"
-                    , "pc : ",  show (pcFromCpuState stat)
-                    , "\ngr : ", show (grFromCpuState stat)
+                    , "pc : ",  pprHex (pcFromCpuState stat)
+                    , "\ngr : ", pprHexList (grFromCpuState stat)
                     , "\nfl : ", show (flFromCpuState stat), "\n\n"]
 
 
@@ -202,6 +201,12 @@ traceBranch = do pc <- readPc
                    _            -> return ""
 
 -- pretty print utility
+pprHex :: Int -> String
+pprHex = printf "0x%x"
+
+pprHexList :: [Int] -> String
+pprHexList xs = "[" ++ (intercalate "," (map pprHex xs)) ++ "]"
+
 pprSIIInst :: String -> Int -> Int -> Inst -> TrcLog
 pprSIIInst str n pc inst = B.pack $ concat
                              [ str, (show n), "\t -- "
@@ -243,7 +248,7 @@ data DbgOrd = BEQ  -- ^ equal
             | BLE  -- ^ little equal
             | BGT  -- ^ greater than
             | BGE  -- ^ greater equal
-            deriving (Eq)
+            deriving (Eq, Show)
 
 
 
@@ -259,7 +264,6 @@ breakOne (BrkNon)   = return RsNormal
 breakOne (BrkOne)   = return RsDbgBrk
 
 breakOne (BrkPc o v) = do pc <- readPc
---                        if `(ordFunc o)` pc v then return RsDbgBrk
                           if (ordFunc o) pc v then return RsDbgBrk
                                               else return RsNormal
 

@@ -1,4 +1,5 @@
 {-# OPTIONS -Wall #-}
+{-# OPTIONS -fno-warn-unused-do-bind #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 
@@ -12,10 +13,14 @@ module Processor.Tool.InteractiveDebugger (
 import System.IO
 import Control.Monad.State
 import qualified Data.ByteString.Char8 as B
-import Data.List (intercalate, elemIndex)
-import Data.Char (toUpper)
-import Data.List.Split (splitOn)
+import Data.List (intercalate, elemIndex, sortBy)
+import Data.Char (toLower)
 import Text.Printf (printf)
+
+import Data.Attoparsec.ByteString as P
+import qualified Data.Attoparsec.ByteString.Char8 as P8
+import Control.Applicative ((<$>), (<*>), (<|>), (<$), (*>))
+
 
 import Processor.Core.Instruction
 import Processor.Core.Memory
@@ -72,44 +77,45 @@ runIdbIO dbgtrc dbgbrk insts vals =
           putStr "(idb) "
           hFlush stdout
           a <- getLine
-          let a' = (if a == "" then prev else a)
+          let a' = (if a == "" then prev else map toLower a)
           let dbgbrk' = getEnableBrkTable t
-          case (parseCommand a') of
-            [""]    -> loop s a' t
-            ["q"]   -> return ()
-            ["run"] -> cmdRun initStat a' t dbgtrc dbgbrk'
-            ["c"]   -> cmdRun s        a' t dbgtrc dbgbrk'
-            ["s"]   -> cmdRun s        a' t dbgtrc (BrkOne : dbgbrk') 
+          case (parseOnly line (B.pack a')) of
+            Left _  -> printUnknown a' >> printUsage >> loop s a' t
+            Right x ->
+              case x of
+                CBlank           -> loop s a' t
+                CQuit            -> return ()
+                CRun             -> exeRun initStat a' t dbgtrc dbgbrk'
+                CC               -> exeRun s a' t dbgtrc dbgbrk'
+                CS               -> exeRun s a' t dbgtrc (BrkOne : dbgbrk') 
 
-            ("info":"reg":_) -> printRegs s        >> loop s a' t
-            ["disas"]        -> printDisasmCr s    >> loop s a' t
-            ["disas", ad]    -> printDisasmAd ad s >> loop s a' t
+                CInfoReg         -> printRegs s        >> loop s a' t
+                CDisasCr         -> printDisasmCr s    >> loop s a' t
+                CDisasAd ad      -> printDisasmAd ad s >> loop s a' t
 
-            ["x", ad]               -> printDmem "1" ad s >> loop s a' t
-            [('x':'/':cnt), ad]     -> printDmem cnt ad s >> loop s a' t
-            ["p", ('*':ad)]         -> printDmem "1" ad s >> loop s a' t
-            ["p", ('*':ad), "=", v] -> loop (setDmem ad v s) a' t
+                CX n ad          -> printDmem n ad s >> loop s a' t
+                CPw ad v         -> loop (setDmem ad v s) a' t
 
-            ["info", "b"]  -> printBrkTable t >> loop s a' t
-            ["delete", n]  -> cmdBrkUtil s a' deleteBrkTable  n
-            ["enable", n]  -> cmdBrkUtil s a' enableBrkTable  n
-            ["disable", n] -> cmdBrkUtil s a' disableBrkTable n
+                CInfoB           -> printBrkTable t >> loop s a' t
+                CDelete  n       -> exeBrkUtil s a' deleteBrkTable  n
+                CEnable  n       -> exeBrkUtil s a' enableBrkTable  n
+                CDisable n       -> exeBrkUtil s a' disableBrkTable n
 
-            ["b", n]            -> cmdBrkWch s a' t (BrkPc BEQ ((read n)::Int))
-            ["watch", d, o, v]  -> cmdBrkWch s a' t (parseWatchCmd d o v)
+                CB n             -> exeBW s a' t (BrkPc BEQ n)
+                CWatchPc     o v -> exeBW s a' t (BrkPc o v)
+                CWatchGReg d o v -> exeBW s a' t (BrkGReg d o v)
+                CWatchDmem d o v -> exeBW s a' t (BrkDmem d o v)
 
-            ["help"]   -> printUsage >> loop s a' t
-            xs         -> printUnknown xs >> printUsage >> loop s a' t
+                CHelp -> printUsage >> loop s a' t
 
           where
-            cmdRun st cmd tbl trc brk =
+            exeRun st cmd tbl trc brk =
                 let (l',st') = runState (evalProgDbg trc brk) st
                 in  B.putStr l' >> loop st' cmd tbl
-            cmdBrkUtil st cmd f n =
-                let n' = (read n) - 1
-                    t' = f n' t
+            exeBrkUtil st cmd f n =
+                let t' = f (n - 1) t
                 in  printBrkTable t' >> loop st cmd t'
-            cmdBrkWch st cmd tbl b =
+            exeBW st cmd tbl b =
                 let tbl' = addBrkTable (True, b) tbl
                 in  printBrkTable tbl' >> loop st cmd tbl'
 
@@ -117,11 +123,6 @@ runIdbIO dbgtrc dbgbrk insts vals =
 ----------------------------------------
 --  sub commands
 ----------------------------------------
--- parse utility
-parseCommand :: String -> [String]
-parseCommand = splitOn " "
-
-
 -- usage
 printUsage :: IO ()
 printUsage = putStr "List of commands:\n\
@@ -147,8 +148,8 @@ printUsage = putStr "List of commands:\n\
                     \p\t-- Set memory value: p *ADDRESS = VALUE\n\
                     \\n"
 
-printUnknown :: [String] -> IO ()
-printUnknown xs = putStr $ "unknown command : " ++ (show $ unwords xs) ++ "\n\n"
+printUnknown :: String -> IO ()
+printUnknown xs = putStr $ "unknown command : " ++ (show xs) ++ "\n\n"
 
 
 -- info register utility
@@ -161,8 +162,8 @@ printRegs s = putStr $ concat [ "pc : ",   (show . pcFromCpuState $ s)
 printDisasmCr :: CpuState -> IO ()
 printDisasmCr s = printDisasm (pcFromCpuState s) 16 s
 
-printDisasmAd :: String -> CpuState -> IO ()
-printDisasmAd ad s = printDisasm (read ad) 16 s
+printDisasmAd :: Int -> CpuState -> IO ()
+printDisasmAd ad s = printDisasm ad 16 s
 
 printDisasm :: Int -> Int -> CpuState -> IO ()
 printDisasm ad cnt s = putStr $
@@ -176,11 +177,9 @@ pprInst ad xs = concat [ ppr0x08x ad, ": " , show y, "\n"
 
 
 -- memory access utility
--- TODO address range check
-printDmem :: String -> String -> CpuState -> IO ()
-printDmem cnt ad s = putStr $ pprDmem 4 ad' v
-    where ad' = read ad
-          v = extructDmems (dmemFromCpuState s) ad' (read cnt)
+printDmem :: Int -> Int -> CpuState -> IO ()
+printDmem cnt ad s = putStr $ pprDmem 4 ad $
+                       extructDmems (dmemFromCpuState s) ad cnt
 
 pprDmem :: Int -> Int -> [Int] -> String
 pprDmem _ _  [] = []
@@ -193,16 +192,14 @@ ppr0x08x :: Int -> String
 ppr0x08x = printf "0x%08x"
 
 -- p set utility
-setDmem :: String -> String -> CpuState -> CpuState
-setDmem ad val = execState (updateDmem (read ad) (read val))
+setDmem :: Int -> Int -> CpuState -> CpuState
+setDmem ad val = execState (updateDmem ad val)
 
 
 
 ----------------------------------------
 --  breakpoint and watchpoint
 ----------------------------------------
--- TODO: refuctoring!
-
 type BrkTable = [(Bool, DbgBrk)]
 
 -- set, get, print BrkTable
@@ -225,11 +222,15 @@ pprBrkTable xs = intercalate "\n" $ zipWith f ([1..]::[Int]) xs
 showDbgBrk :: DbgBrk -> String
 showDbgBrk (BrkNon) = "non breakpoint"
 showDbgBrk (BrkOne) = "allways breakpoint"
-showDbgBrk (BrkPc o ad) = concat [ "pc ", showDbgOrd o, " ", show ad ]
-showDbgBrk (BrkDmem mem o ad) = concat [ "*", show mem, " "
-                                       , showDbgOrd o, " ", show ad ]
-showDbgBrk (BrkGReg reg o ad) = concat [ show reg, " "
-                                       , showDbgOrd o, " ", show ad ]
+showDbgBrk (BrkPc o ad) = printf "PC %s %d  (PC %s 0x%x)" o' ad o' ad
+                            where o' = showDbgOrd o
+showDbgBrk (BrkDmem mem o ad) = printf "*%d %s %d  (*0x%x %s 0x%x)"
+                                  mem o' ad mem o' ad
+                                    where o' = showDbgOrd o
+showDbgBrk (BrkGReg reg o ad) = printf "%s %s %d  (%s %s 0x%x)"
+                                  reg' o' ad reg' o' ad
+                                    where reg' = show reg
+                                          o' = showDbgOrd o
 
 showDbgOrd :: DbgOrd -> String
 showDbgOrd BEQ = "=="
@@ -259,31 +260,166 @@ setFstN a 0 ((_,b):xs) = (a,b) : xs
 setFstN a n (x:xs)     = x : (setFstN a (n-1) xs)
 
 
--- watch command parse utility
--- TODO: string check
-parseWatchCmd :: String -> String -> String -> DbgBrk
-parseWatchCmd ('*':xs) o v = BrkDmem (read xs) (strToDbgOrd o) (read v)
-parseWatchCmd "pc"     o v = BrkPc   (strToDbgOrd o) (read v)
-parseWatchCmd reg      o v = BrkGReg (strToGReg reg) (strToDbgOrd o) (read v)
 
--- from Assembler.hs  TODO: refactoring!
-strToGReg :: String -> GReg
-strToGReg  x = case (elemIndex x gregNames) of
-                 Just n  -> toEnum n
-                 Nothing -> error $ "strToGReg" ++ (show x)
+----------------------------------------
+-- command parser
+----------------------------------------
+data Cmd = CQuit
+         | CHelp
+         | CRun
+         | CC
+         | CS
+         | CInfoReg
+         | CInfoB
+         | CDisasAd Int
+         | CDisasCr
+         | CX Int Int
+         | CPw Int Int
+         | CDelete Int
+         | CEnable Int
+         | CDisable Int
+         | CB Int
+         | CWatchPc DbgOrd Int
+         | CWatchGReg GReg DbgOrd Int
+         | CWatchDmem Int DbgOrd Int
+         | CBlank
+         deriving (Show, Eq)
 
-gregNames :: [String]
-gregNames  = map ((map toUpper) . show)
-               [(minBound :: GReg) .. (maxBound :: GReg)]
+-- commands
+type ParseCmd = Parser Cmd
 
-strToDbgOrd :: String -> DbgOrd
+line :: ParseCmd
+line = do skipSpaces
+          a <- command
+          skipSpaces
+          endOfInput
+          return a
+
+-- each command
+command :: ParseCmd
+command = cmdQuit <|> cmdHelp <|> cmdRun <|> cmdS <|> cmdC
+      <|> cmdInfoReg <|> cmdInfoB
+      <|> cmdDisasAd <|> cmdDisasCr
+      <|> cmdXn <|> cmdX1 <|> cmdPw <|> cmdPr
+      <|> cmdDelete <|> cmdEnable <|> cmdDisable
+      <|> cmdB
+      <|> cmdWatchPc <|> cmdWatchGReg <|> cmdWatchDmem
+      <|> cmdBlank
+
+-- blank
+cmdBlank :: ParseCmd
+cmdBlank = CBlank <$ skipSpaces
+
+-- run
+cmdQuit, cmdHelp, cmdRun, cmdC, cmdS :: ParseCmd
+cmdQuit = CQuit <$ string "q"
+cmdHelp = CHelp <$ string "help"
+cmdRun  = CRun  <$ string "run"
+cmdS    = CS    <$ string "s"
+cmdC    = CC    <$ string "c"
+
+cmdInfoReg, cmdInfoB :: ParseCmd
+cmdInfoReg = CInfoReg <$ (string "info" >> delimSpace >> string "reg")
+cmdInfoB   = CInfoB   <$ (string "info" >> delimSpace >> string "b")
+
+-- disassemble
+cmdDisasAd, cmdDisasCr :: ParseCmd
+cmdDisasAd = CDisasAd <$> (string "disas" >> delimSpace *> num)
+cmdDisasCr = CDisasCr <$   string "disas"
+
+-- memory access
+cmdXn, cmdX1, cmdPr, cmdPw :: ParseCmd
+cmdXn = CX   <$> (string "x/" >> num) <*> (delimSpace >> num)
+cmdX1 = CX 1 <$> (string "x" >> delimSpace *> num)
+cmdPr = CX 1 <$> (string "p" >> delimSpace >> string "*" >> num)
+cmdPw = CPw  <$> (string "p" >> delimSpace >> string "*" >> num)
+             <*> (skipSpaces >> string "=" >> skipSpaces >> num)
+
+-- break utility
+cmdDelete, cmdEnable, cmdDisable :: ParseCmd
+cmdDelete  = CDelete  <$> (string "delete"  >> delimSpace *> num)
+cmdEnable  = CEnable  <$> (string "enable"  >> delimSpace *> num)
+cmdDisable = CDisable <$> (string "disable" >> delimSpace *> num)
+
+
+-- break and watch
+cmdB :: ParseCmd
+cmdB = CB <$> (string "b" >> delimSpace *> num)
+
+cmdWatchPc :: ParseCmd
+cmdWatchPc = CWatchPc
+               <$> (string "watch" >> delimSpace >> string "pc" >>
+                    skipSpaces >> dbgord)
+               <*> (skipSpaces >> num)
+
+cmdWatchGReg :: ParseCmd
+cmdWatchGReg = CWatchGReg
+                 <$> (string "watch" >> delimSpace >> greg)
+                 <*> (skipSpaces >> dbgord)
+                 <*> (skipSpaces >> num)
+
+cmdWatchDmem :: ParseCmd
+cmdWatchDmem = CWatchDmem
+                 <$> (string "watch" >> delimSpace >> string "*" >> num)
+                 <*> (skipSpaces >> dbgord)
+                 <*> (skipSpaces >> num)
+
+-- utility
+skipSpaces :: Parser ()
+skipSpaces = skipWhile P8.isHorizontalSpace
+
+delimSpace :: Parser ()
+delimSpace = satisfy P8.isHorizontalSpace *> skipWhile P8.isHorizontalSpace
+
+
+-- number
+num :: Parser Int
+num = numMinus <|> numHex <|> numNoSign
+
+numNoSign :: Parser Int
+numNoSign = do d <- P.takeWhile1 (inClass "0123456789")
+               return $ read (B.unpack d)
+
+numMinus :: Parser Int
+numMinus = do P8.char8 '-'
+              d <- P.takeWhile1 (inClass "0123456789")
+              return $ read ('-' : B.unpack d)
+
+numHex :: Parser Int
+numHex = do string "0x"
+            d <- P.takeWhile1 (inClass "0123456789abcdef")
+            return $ read ("0x" ++ B.unpack d)
+
+
+-- DbgOrd
+dbgord :: Parser DbgOrd
+dbgord = do a <- choice $ map string [ "==" , "!=" , "<=" , "<" , ">=" , ">" ]
+            return $ strToDbgOrd a
+
+strToDbgOrd :: B.ByteString -> DbgOrd
 strToDbgOrd "==" = BEQ
 strToDbgOrd "!=" = BNE
 strToDbgOrd "<"  = BLT
 strToDbgOrd "<=" = BLE
 strToDbgOrd ">"  = BGT
 strToDbgOrd ">=" = BGE
-strToDbgOrd _    = BEQ   -- TODO: check
+strToDbgOrd x    = error $ "strToDbgOrd" ++ (show x)
+
+
+-- GReg
+greg :: Parser GReg
+greg = do let reverseSortedGregNames = sortBy (flip compare) gregNames
+          a <- choice $ map string reverseSortedGregNames
+          return $ strToGReg a
+
+gregNames :: [B.ByteString]
+gregNames  = map (B.pack . (map toLower) . show)
+               [(minBound :: GReg) .. (maxBound :: GReg)]
+
+strToGReg :: B.ByteString -> GReg
+strToGReg  x = case (elemIndex x gregNames) of
+                 Just n  -> toEnum n
+                 Nothing -> error $ "strToGReg" ++ (show x)
 
 
 
@@ -312,5 +448,6 @@ strToDbgOrd _    = BEQ   -- TODO: check
 -- >  p         -- Print memory value: p *ADDRESS
 -- >  p         -- Set memory value: p *ADDRESS = VALUE
 -- >  
+
 
 

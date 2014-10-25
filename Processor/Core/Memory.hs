@@ -60,7 +60,7 @@ type ImemArray = Array IAddress Inst
 imemSize, imemMin, imemMax :: Int
 imemSize = cfgImemSize  cpuConfig
 imemMin  = cfgImemStart cpuConfig
-imemMax  = imemSize - 1
+imemMax  = imemMin + imemSize - 1
 
 -- | initialize instruction memory
 initImem :: ImemArray
@@ -76,7 +76,9 @@ modifyImems ary (start, insts) = ary // zip [start .. imemMax] insts
 
 -- | fetch instruction from instruction memory
 fetchImem :: ImemArray -> IAddress -> Inst
-fetchImem ary ad = ary ! ad
+fetchImem ary ad = ary ! ad'
+    where ad' = ad `rem` (imemMax + 1)     -- wrap address
+
 
 -- | get instruction memory image
 getInstImage :: ImemArray -> InstImage
@@ -85,8 +87,7 @@ getInstImage ary = [(ad, val)]
           ad = fst $ head ary'
           val = elems ary
 
--- @@ BUG
--- TODO range check! and efficienty implement
+-- TODO efficienty implement
 -- | extruct instructions from instruction memory
 extructImems :: InstImage -> IAddress -> Int -> [Inst]
 extructImems img ad cnt = take cnt $ drop beg vals
@@ -117,7 +118,7 @@ type DmemArray = Array DAddress DValue
 dmemSize, dmemMin, dmemMax :: Int
 dmemSize = cfgDmemSize  cpuConfig
 dmemMin  = cfgDmemStart cpuConfig
-dmemMax  = dmemSize - 1
+dmemMax  = dmemMin + dmemSize - 1
 
 -- | initialize data memory
 initDmem :: DmemArray
@@ -129,11 +130,13 @@ presetDmem = foldl modifyDmems initDmem
 
 -- | get data from data memory
 getDmem :: DmemArray -> DAddress -> DValue
-getDmem ary ad = ary ! ad
+getDmem ary ad = ary ! ad'
+    where ad' = ad `rem` (dmemMax + 1)     -- wrap address
 
 -- | modify data memory
 modifyDmem :: DmemArray -> DAddress -> DValue -> DmemArray
-modifyDmem ary ad dat = ary // [(ad, dat)]
+modifyDmem ary ad dat = ary // [(ad', dat)]
+    where ad' = ad `rem` (dmemMax + 1)     -- wrap address
 
 -- | modify data memory by values
 modifyDmems :: DmemArray -> (DAddress, [DValue]) -> DmemArray

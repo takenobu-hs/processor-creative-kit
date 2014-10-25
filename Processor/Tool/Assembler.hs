@@ -42,7 +42,7 @@ import Processor.Core.Instruction
 -- >  [MOVI R0 1,HALT]
 --
 parseInst :: B.ByteString -> [Inst]
-parseInst inp = case (parseOnly file inp) of
+parseInst inp = case (parseOnly file (B.map toLower inp)) of
                   Right x -> x
                   _       -> error "parseInst: parse error"
 
@@ -166,18 +166,14 @@ pc = do string "pc"
 
 -- flag condition
 fcond :: Parser FCond
-fcond = do a <- (string "eq" <|> string "EQ"
-             <|> string "ne" <|> string "NE"
-             <|> string "lt" <|> string "LT"
-             <|> string "le" <|> string "LE"
-             <|> string "gt" <|> string "GT"
-             <|> string "ge" <|> string "GE")
+fcond = do a <- (string "eq" <|> string "ne" 
+             <|> string "lt" <|> string "le" 
+             <|> string "gt" <|> string "ge")
            return $ strToFCond (B.unpack a)
 
 -- immidiate
--- TODO: need refactoring
 imm :: Parser Int
-imm = immNoSign <|> immMinus
+imm = immMinus <|> immHex <|> immNoSign
 
 immNoSign :: Parser Int
 immNoSign = do d <- P.takeWhile1 (inClass "0123456789")
@@ -187,6 +183,12 @@ immMinus :: Parser Int
 immMinus = do char8 '-'
               d <- P.takeWhile1 (inClass "0123456789")
               return $ read ('-' : B.unpack d)
+
+immHex :: Parser Int
+immHex = do string "0x"
+            d <- P.takeWhile1 (inClass "0123456789abcdef")
+            return $ read ("0x" ++ B.unpack d)
+
 
 -- memory operand
 mem :: Parser GReg

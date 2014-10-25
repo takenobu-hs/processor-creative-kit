@@ -8,15 +8,21 @@ You can create your processor with your own instruction set.
 enjoy! :smiley:
 
 
+Contents
+--------
+  - [Summary] (#summary)
+  - [Quick tour] (#quick-tour)
+
+
 Summary
 -------
 
 ### Feature
   - easy try, easy moidfy
-  - Core
-    - pure evaluation Core (without IO)  (you can embedd it anywhere)
+  - Core/
+    - a purely evaluation core (without IO)  (you can embedd it anywhere)
 
-  - Tool
+  - Tool/
     - using monadic parser (Attoparsec)
     - independent design, Core machine and Assembler format
     - include very very simple assembler
@@ -40,9 +46,6 @@ Summary
 ### Acknowledge
   - HARM, powerpc, ministg, hython packages.
     and many processors, many tools.
-
-
-
 
 
 

@@ -32,8 +32,6 @@ data ProfMode = ProfInst    -- ^ instruction profile
               | ProfBranch  -- ^ branch, jump, call profile
               | ProfLoad    -- ^ memory load profile
               | ProfStore   -- ^ memory store profile
---            | ProfDmem
---            | ProfStat
               deriving Eq
 
 
@@ -124,8 +122,6 @@ runProfIO profmd insts vals = putStr $ runProf profmd insts vals
 --
 prof :: [ProfMode] -> B.ByteString -> String
 prof profmd trclog = concatMap (`profOne` trclog) profmd
-
--- profFile :: [ProfMode] -> File.Path -> String
 
 
 modeProfToTrc :: [ProfMode] -> [DbgTrc]

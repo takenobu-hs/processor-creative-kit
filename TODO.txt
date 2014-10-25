@@ -7,11 +7,9 @@ refactoring
 -----------
 
 ### any
- - getDmem range check
- - toLower (flag, inst name,...)
- - idb space parser
+ - strict eval parseInst before idb
+ - assembler error analyzer
  - shift instruction name. << direction.
-
 
 
 
@@ -19,20 +17,11 @@ refactoring
 error
 -----
 
-(idb) x *2
-*** Exception: Prelude.read: no parse
 
-(idb) x 10000
-*** Exception: Ix{Int}.index: Index (10000) out of range ((0,7))
 
-(idb) x/100 -
-*** Exception: Prelude.read: no parse
-
-(idb) watch r5 > 4
-idb.hs: strToGReg"r5"
-
-(idb) delete  2     ; space!
-
+low priority
+------------
+ - wrap address message?
 
 
 document
@@ -40,18 +29,40 @@ document
  - runhaskell examples/idb.hs examples/test0.asm < zz  (script idb)
 
 
+
 package
 -------
  - HLint
  - HSpec, HUnit
  - QuickCheck
- - Travis-CI README.md (https://github.com/philopon/apiary)
-
+ - Travis-CI
+ - README.md 
+     https://github.com/yi-editor/yi
+     https://github.com/philopon/apiary
 
 
 
 done
 ----
+ - trace pc, reg (hexa)
+ - profile (hexa)?
+config imem, dmem address test
+ - idb parsing
+(idb) x *2
+*** Exception: Prelude.read: no parse
+(idb) x/100 -
+*** Exception: Prelude.read: no parse
+delete, enable, ... (read parse)
+ - asm hex imm (0x123)
+(idb) x 10000
+*** Exception: Ix{Int}.index: Index (10000) out of range ((0,7))
+ - getDmem range check
+ - idb watch parser
+(idb) watch r5 > 4
+idb.hs: strToGReg"r5"
+ - toLower (flag, inst name,...)
+ - idb space parser
+(idb) delete  2     ; space!
  x show; R0 .. R7 : [...  FC .. FZ : 
  x cabal auto test
  x profiler file input

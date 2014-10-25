@@ -1,25 +1,25 @@
 
 
 # 0
-	mov 	r0, 10  
-      	mov 	r1, 11  
- 	mov 	r2, 12 
-        mov 	r3, 13   
-	mov 	r4, 14
+	MOV 	R0, 10  
+      	MOV 	R1, 11  
+ 	MOV 	R2, 12 
+        MOV 	R3, 13   
+	MOV 	R4, 14
 
-	mov 	r5, 15 
-  	mov 	r6, 16 
-	mov 	r7, 17 
-	nop
-	nop
+	MOV 	R5, 15 
+  	MOV 	R6, 16 
+	MOV 	R7, 17 
+	NOP
+	NOP
 
 
 # 10
-	mov	r5, 0
-	mov	r6, 7
-	mov	r7, 1
-	st	m(r5), r5
-	ld	r4, m(r5)
+	MOV	R5, 0
+	MOV	R6, 7
+	MOV	R7, 1
+	ST	M(R5), R5
+	LD	R4, M(R5)
 	add	r5, r5, r7
 	cmp	r5, r6
 	b	ne, -4
@@ -30,6 +30,7 @@
 	mov	r1, 30
 	call	r1
 	mov	r6,606
+	mov	r5,0xcafe
 	halt
     	nop
 	nop
