@@ -5,10 +5,10 @@ synopsis:            processor-creative-kit
 description:         you can create your processor.
 license:             BSD3
 license-file:        LICENSE
-author:              Takenobu T
+author:              Takenobu Tani
 maintainer:          takenobu.hs@gmail.com
--- copyright:        Takenobu T
-category:            Processor
+copyright:           Takenobu Tani
+category:            Hardware
 build-type:          Simple
 extra-source-files:  README.md
 cabal-version:       >=1.10
