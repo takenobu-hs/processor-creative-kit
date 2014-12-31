@@ -1,7 +1,7 @@
 Processor-creative-kit
 ======================
 
-This is a haskell package, for playing processor; [processor-creative-kit](https://hackage.haskell.org/package/processor-creative-kit).
+This is a [haskell package](https://hackage.haskell.org/package/processor-creative-kit) for playing processor.
 
 You can create your processor with your own instruction set.
 
@@ -12,6 +12,17 @@ Contents
 --------
   - [Summary] (#summary)
   - [Quick tour] (#quick-tour)
+   1. [simple run] (#simple run)
+     - run
+     - run with initial data memory
+     - run with assembly file
+   2. [advanced run] (#advanced run)
+     - tracing run
+     - breaking run
+     - profiling run
+     - interactive debugger
+   3. [create your processor] (#create your processor)
+     - add your instruction
 
 
 Summary
@@ -20,7 +31,7 @@ Summary
 ### Feature
   - easy try, easy modify
   - Core/
-    - a purely evaluation core (without IO)  (you can embed it anywhere)
+    - a purely functional core (without IO)  (you can embed it anywhere)
 
   - Tool/
     - using monadic parser (Attoparsec)
@@ -31,7 +42,7 @@ Summary
 
 
 ### Default processor architecture
-  - harvard arch. (split imem and dmem)
+  - Harvard architecture. (instruction and data memories are splited)
   - fixed length instruction (word length)
   - word addressing (no byte addressing)
   - ideal immediate lengh (settable word immediate by 1 instruction)
@@ -40,44 +51,33 @@ Summary
 
 ### Limitation
   - using slow container(Data.Array) for simple implementation.
-  - assembler error message is unkindness.
+  - assembler error messages are unkindness.
 
 
 ### Acknowledge
-  - [HARM](https://hackage.haskell.org/package/HARM),
+  - I was inspired from these packages:
+  [HARM](https://hackage.haskell.org/package/HARM),
     [powerpc](https://hackage.haskell.org/package/powerpc),
     [ministg](https://hackage.haskell.org/package/ministg),
-    [hython](https://github.com/mattgreen/hython) packages.
-    and many processors, many tools.
+    [hython](https://github.com/mattgreen/hython).
+  - and many processors, many tools.
 
 
 Quick tour
 ======================
 
- 1. simple run
-   - simple run
-   - run with initial data memory
-   - run with assembler file
- 2. create your processor
-   - add your instruction
- 3. advance
-   - run with trace print
-   - debugging run
-   - profiling
-   - interactive debugger
-
-
-simple run
+(i) simple run
 ---------------------
 
-### simple run
-
+### run
+code:
 ```haskell
 % ghci
 > import Processor.Core
 > run [(0, [MOVI R0 20, HALT])] []
 ```
 
+result:
 ```
 pc : 1
 gr : [20,0,0,0,0,0,0,0]
@@ -86,6 +86,7 @@ fl : [False,False]
 
 ### run with initial data memory
 
+code:
 ```haskell
 run [(0, testpro)]  [(100, [10, 20])]
 
@@ -97,6 +98,7 @@ testpro  = [ MOVI R4 100
            , HALT ]
 ```
 
+result:
 ```
 pc : 5
 gr : [30,10,20,0,100,101,0,0]
@@ -104,15 +106,16 @@ fl : [False,False]
 ```
 
 
-### run with assembler file
+### run with assembly file
 
+code:
 ```haskell
 testpro = parseInstFile "test.asm"
 run [(0, testpro)] []
 ```
 
+[test.asm] file :
 ```
-[test.asm]
   mov  r4, 100
   mov  r5, 101
   ld   r1, m(r4)
@@ -122,40 +125,18 @@ run [(0, testpro)] []
 ```
 
 
-create your processor
+(ii) advanced run
 ---------------------
 
-### add your instruction
+### tracing run
 
-example : add "NEG" instruction.
-
-[Processor/Core/Instruction.hs]
-```haskell
-          | NEG   GReg GReg
-```
-
-[Processor/Core/Execution.hs]
-```haskell
-evalStep (NEG   ra rb)    = uniopInst (neg) ra rb
-```
-
-[Processor/Tool/Assembler.hs]
-```haskell
-         <|> inst2 NEG  "neg" greg greg
-```
-
-
-
-advance
----------------------
-
-### run with trace print
-
+code:
 ```haskell
 runDbg [TrcPc, TrcInst] []  [(0, testpro)]  [(100, [10, 20])]
 runDbgIO [TrcPc, TrcInst] []  [(0, testpro)]  [(100, [10, 20])]
 ```
 
+result:
 ```
 TrcPc:  pc : 0
 TrcInst:        pc : 0  MOVI R4 100
@@ -180,13 +161,15 @@ TrcInst:        pc : 5  HALT
 
 
 
-### debugging run
+### breaking run
 
+code:
 ```haskell
 runDbg [TrcInst] [(BrkPc BEQ 2)]  [(0, testpro)]  [(100, [10, 20])]
 runDbgIO [TrcInst] [(BrkPc BEQ 2)]  [(0, testpro)]  [(100, [10, 20])]
 ```
 
+result:
 ```
 TrcInst:        pc : 0  MOVI R4 100
 
@@ -195,8 +178,9 @@ TrcInst:        pc : 1  MOVI R5 101
 
 
 
-### profiling
+### profiling run
 
+code:
 ```haskell
 prof [ProfInst] $ runDbg [TrcInst] []  [(0, testpro)]  [(100, [10, 20])]
 
@@ -205,6 +189,7 @@ or
 runProfIO [ProfInst]  [(0, testpro)] [(100, [10, 20])]
 ```
 
+result:
 ```
 instruction profile:
 
@@ -216,11 +201,12 @@ instruction profile:
   total 6
 ```
 
-
+code:
 ```haskell
 runProfIO [ProfLoda]  [(0, testpro)] [(100, [10, 20])]
 ```
 
+result:
 ```
 Memory load address profile:
 
@@ -235,10 +221,12 @@ Memory load address profile:
 
 ### interactive debugger
 
+code:
 ```haskell
 runIdbIO [TrcInst] [(BrkPc BEQ 2)]  [(0, testpro)]  [(100, [10, 20])]
 ```
 
+interactive command and result:
 ```
 (idb) run
 TrcInst:        pc : 0  MOVI R4 100
@@ -269,5 +257,27 @@ TrcInst:        pc : 5  HALT
 ```
 
 
+(iii) create your processor
+---------------------
 
+### add your instruction
+
+example for adding "NEG" instruction.
+
+insert following lines:
+
+[Processor/Core/Instruction.hs]
+```haskell
+          | NEG   GReg GReg
+```
+
+[Processor/Core/Execution.hs]
+```haskell
+evalStep (NEG   ra rb)    = uniopInst (neg) ra rb
+```
+
+[Processor/Tool/Assembler.hs]
+```haskell
+         <|> inst2 NEG  "neg" greg greg
+```
 
