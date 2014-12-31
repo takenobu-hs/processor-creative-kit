@@ -1,7 +1,7 @@
 Processor-creative-kit
 ======================
 
-This is a haskell package, for playing processor [pck][1].
+This is a haskell package, for playing processor; [processor-creative-kit](https://hackage.haskell.org/package/processor-creative-kit).
 
 You can create your processor with your own instruction set.
 
@@ -34,7 +34,7 @@ Summary
   - harvard arch. (split imem and dmem)
   - fixed length instruction (word length)
   - word addressing (no byte addressing)
-  - ideal immidiate lengh (settable word immediate by 1 instruction)
+  - ideal immediate lengh (settable word immediate by 1 instruction)
   - no MMU, cache, privilege level, interruption, I/O, and any
 
 
@@ -44,9 +44,11 @@ Summary
 
 
 ### Acknowledge
-  - HARM, powerpc, ministg, hython packages.
+  - [HARM](https://hackage.haskell.org/package/HARM),
+    [powerpc](https://hackage.haskell.org/package/powerpc),
+    [ministg](https://hackage.haskell.org/package/ministg),
+    [hython](https://github.com/mattgreen/hython) packages.
     and many processors, many tools.
-
 
 
 Quick tour
@@ -144,7 +146,7 @@ evalStep (NEG   ra rb)    = uniopInst (neg) ra rb
 
 
 
-Advance
+advance
 ---------------------
 
 ### run with trace print
@@ -267,8 +269,5 @@ TrcInst:        pc : 5  HALT
 ```
 
 
-
-
- [1]:  http://www.haskell.org/ghc/            "www.haskell.org/ghc/"
 
 
