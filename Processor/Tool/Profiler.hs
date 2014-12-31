@@ -234,16 +234,16 @@ calcTrcCounts ::  B.ByteString -> Int -> Int -> B.ByteString
 calcTrcCounts label ntab nspc =
                  sortBy (flip (compare `on` snd)) . Map.toList
                . calcKeyCounts
-               . map (extructField ntab nspc)
-               . extructLines label
+               . map (extractField ntab nspc)
+               . extractLines label
 
-extructLines :: B.ByteString -> B.ByteString -> [B.ByteString]
-extructLines prefix = filter (prefix `B.isPrefixOf`)
+extractLines :: B.ByteString -> B.ByteString -> [B.ByteString]
+extractLines prefix = filter (prefix `B.isPrefixOf`)
                     . filter (`notElem` [""])
                     . B.lines
 
-extructField :: Int -> Int -> B.ByteString -> B.ByteString
-extructField ntab nspc xs = field
+extractField :: Int -> Int -> B.ByteString -> B.ByteString
+extractField ntab nspc xs = field
     where ftab  = B.splitWith (== '\t') xs
           fspc
             | null ftab = []
@@ -255,7 +255,7 @@ extructField ntab nspc xs = field
 filterLines :: Int -> Int -> (B.ByteString -> Bool) ->
                  B.ByteString -> B.ByteString
 filterLines ntab nspc f = B.unlines . filter cond . B.lines
-    where cond xs = f $ extructField ntab nspc xs
+    where cond xs = f $ extractField ntab nspc xs
 
 
 -- converter

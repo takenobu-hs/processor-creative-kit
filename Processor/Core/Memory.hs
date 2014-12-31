@@ -22,7 +22,7 @@ module Processor.Core.Memory (
         , modifyImems
         , fetchImem
         , getInstImage
-        , extructImems
+        , extractImems
         -- ** Data memory access
         , initDmem
         , presetDmem
@@ -30,7 +30,7 @@ module Processor.Core.Memory (
         , modifyDmem
         , modifyDmems
         , getDataImage
-        , extructDmems
+        , extractDmems
   ) where
 
 import Data.Array (Array, listArray, (//), (!), elems, assocs)
@@ -89,8 +89,8 @@ getInstImage ary = [(ad, val)]
 
 -- TODO efficiency implement
 -- | extract instructions from instruction memory
-extructImems :: InstImage -> IAddress -> Int -> [Inst]
-extructImems img ad cnt = take cnt $ drop beg vals
+extractImems :: InstImage -> IAddress -> Int -> [Inst]
+extractImems img ad cnt = take cnt $ drop beg vals
     where (start, vals):_ = img
           beg = ad - start
 
@@ -151,8 +151,8 @@ getDataImage ary = [(ad, val)]
 
 -- TODO range check! and efficiency implement
 -- | extract data values from data memory
-extructDmems :: DataImage -> DAddress -> Int -> [DValue]
-extructDmems img ad cnt = take cnt $ drop beg vals
+extractDmems :: DataImage -> DAddress -> Int -> [DValue]
+extractDmems img ad cnt = take cnt $ drop beg vals
     where (start, vals):_ = img
           beg = ad - start
 

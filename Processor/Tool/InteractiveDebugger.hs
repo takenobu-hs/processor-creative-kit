@@ -167,7 +167,7 @@ printDisasmAd ad s = printDisasm ad 16 s
 
 printDisasm :: Int -> Int -> CpuState -> IO ()
 printDisasm ad cnt s = putStr $
-                         pprInst ad $ extructImems (imemFromCpuState s) ad cnt
+                         pprInst ad $ extractImems (imemFromCpuState s) ad cnt
 
 pprInst :: Int -> [Inst] -> String
 pprInst _  [] = []
@@ -179,7 +179,7 @@ pprInst ad xs = concat [ ppr0x08x ad, ": " , show y, "\n"
 -- memory access utility
 printDmem :: Int -> Int -> CpuState -> IO ()
 printDmem cnt ad s = putStr $ pprDmem 4 ad $
-                       extructDmems (dmemFromCpuState s) ad cnt
+                       extractDmems (dmemFromCpuState s) ad cnt
 
 pprDmem :: Int -> Int -> [Int] -> String
 pprDmem _ _  [] = []
