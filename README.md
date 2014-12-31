@@ -18,24 +18,24 @@ Summary
 -------
 
 ### Feature
-  - easy try, easy moidfy
+  - easy try, easy modify
   - Core/
-    - a purely evaluation core (without IO)  (you can embedd it anywhere)
+    - a purely evaluation core (without IO)  (you can embed it anywhere)
 
   - Tool/
     - using monadic parser (Attoparsec)
     - independent design, Core machine and Assembler format
-    - include very very simple assembler
-    - include very very simple debugger
-    - include very very simple profiler
+    - include very simple prototype assembler
+    - include very simple prototype debugger
+    - include very simple prototype profiler
 
 
 ### Default processor architecture
   - harvard arch. (split imem and dmem)
   - fixed length instruction (word length)
   - word addressing (no byte addressing)
-  - ideal immidiate lengh (setable word immidiate by 1 instruction)
-  - no MMU, cache, priviledge level, interruption, I/O, and any
+  - ideal immidiate lengh (settable word immediate by 1 instruction)
+  - no MMU, cache, privilege level, interruption, I/O, and any
 
 
 ### Limitation
@@ -60,7 +60,7 @@ Quick tour
    - add your instruction
  3. advance
    - run with trace print
-   - deugging run
+   - debugging run
    - profiling
    - interactive debugger
 
@@ -178,7 +178,7 @@ TrcInst:        pc : 5  HALT
 
 
 
-### deugging run
+### debugging run
 
 ```haskell
 runDbg [TrcInst] [(BrkPc BEQ 2)]  [(0, testpro)]  [(100, [10, 20])]
