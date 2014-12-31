@@ -201,7 +201,7 @@ pprBranchTNCounts trclog = pprTrcCounts hfmt cfmt tfmt counts 50
 
 
 ----------------------------------------
--- sttistics utility 
+-- statistics utility 
 ----------------------------------------
                       -- key          value
 type KeyCounts = Map.Map B.ByteString Int

@@ -122,7 +122,7 @@ memInsts = inst2 LD "ld"  greg mem
        <|> inst2 ST "st"  mem  greg
 
 
--- asynmetric operand utility
+-- asymmetric operand utility
 movpc :: GReg -> b -> Inst
 movpc a _ = MOVPC a
 
@@ -171,7 +171,7 @@ fcond = do a <- (string "eq" <|> string "ne"
              <|> string "gt" <|> string "ge")
            return $ strToFCond (B.unpack a)
 
--- immidiate
+-- immediate
 imm :: Parser Int
 imm = immMinus <|> immHex <|> immNoSign
 

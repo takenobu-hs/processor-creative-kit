@@ -143,7 +143,7 @@ store ra rb = do (ra', rb') <- readGReg2 ra rb
                  updateDmem ra' rb' 
                  incPc
 
--- alithmetic
+-- arithmetic
 cmpRR :: GReg -> GReg -> EvalCpu ResultStat
 cmpRR ra rb = do (ra', rb') <- readGReg2 ra rb
                  updateFlag FLZ (ra' == rb')
@@ -162,7 +162,7 @@ uniopInst op ra rb = do rb' <- readGReg rb
                         updateGReg ra (op rb')
                         incPc
 
--- premitive operation
+-- primitive operation
 logicalShift :: Int -> Int -> Int
 logicalShift val sft = fromIntegral $ toInteger $ 
                          (fromIntegral val :: Word32) `shift` sft

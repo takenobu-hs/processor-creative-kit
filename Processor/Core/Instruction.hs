@@ -73,7 +73,7 @@ data FCond = FCEQ  -- ^ equal
            | FCLT  -- ^ little than
            | FCLE  -- ^ little equal
            | FCGT  -- ^ greater than
-           | FCGE  -- ^ greater eaual
+           | FCGE  -- ^ greater equal
            deriving (Show, Eq)
 
 

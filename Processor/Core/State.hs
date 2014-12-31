@@ -53,7 +53,7 @@ type EvalCpu a = State CpuState a
 -- | result state
 data ResultStat = RsNormal      -- ^ normal result
                 | RsHalt        -- ^ cpu halt(stop)
-                | RsDbgBrk      -- ^ debugger triggerd
+                | RsDbgBrk      -- ^ debugger triggered
                 | RsErr String  -- ^ execution error
                 deriving (Show, Eq)
 

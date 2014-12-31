@@ -43,7 +43,7 @@ import Processor.Core.Execution
 -- >  fl : [False,False]
 --
 --
--- Example: run with trace outupt. (instruction trace)
+-- Example: run with trace output. (instruction trace)
 --
 -- >  > runDbg [TrcInst] [] [(0,[MOVI R0 7, MOVI R1 8, HALT])] []
 -- >  TrcInst:        pc : 0  MOVI R0 7
@@ -59,7 +59,7 @@ runDbg dbgtrc dbgbrk insts vals = runState (evalProgDbg dbgtrc dbgbrk)
 
 -- | debugging run for IO stdout
 --
--- Example: run with trace outupt. (instruction trace)
+-- Example: run with trace output. (instruction trace)
 --
 -- >  > runDbgIO [TrcInst] [] [(0,[MOVI R0 7, MOVI R1 8, HALT])] []
 -- >  TrcInst:        pc : 0  MOVI R0 7
@@ -85,7 +85,7 @@ evalProgDbg dbgtrc dbgbrk = loop B.empty 0
                                  RsNormal -> loop trclog'' (cnt+1)
                                  _        -> return trclog''
 
--- run limitter for inf loop
+-- run limiter for inf loop
 dbgRunLimit :: Int
 dbgRunLimit = 1000000
 
@@ -222,7 +222,7 @@ pprTrcBranch ad str pc inst = B.pack $ concat
 
 
 ----------------------------------------
---  debug berak
+--  debug break
 ----------------------------------------
 
 -- | break conditions

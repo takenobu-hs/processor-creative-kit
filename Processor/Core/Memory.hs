@@ -3,11 +3,11 @@
 
 
 module Processor.Core.Memory (
-        -- * Abstruction Memory type
+        -- * Abstraction Memory type
           InstImage
         , DataImage
 
-        -- * Implmentation dependent types and functions
+        -- * Implementation dependent types and functions
         -- | It's better to use Processor.Core.State functions.
 
         -- ** internal types
@@ -87,8 +87,8 @@ getInstImage ary = [(ad, val)]
           ad = fst $ head ary'
           val = elems ary
 
--- TODO efficienty implement
--- | extruct instructions from instruction memory
+-- TODO efficiency implement
+-- | extract instructions from instruction memory
 extructImems :: InstImage -> IAddress -> Int -> [Inst]
 extructImems img ad cnt = take cnt $ drop beg vals
     where (start, vals):_ = img
@@ -149,8 +149,8 @@ getDataImage ary = [(ad, val)]
           ad = fst $ head ary'
           val = elems ary
 
--- TODO range check! and efficienty implement
--- | extruct data values from data memory
+-- TODO range check! and efficiency implement
+-- | extract data values from data memory
 extructDmems :: DataImage -> DAddress -> Int -> [DValue]
 extructDmems img ad cnt = take cnt $ drop beg vals
     where (start, vals):_ = img
