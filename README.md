@@ -36,9 +36,9 @@ Summary
   - Tool/
     - using monadic parser (Attoparsec)
     - independent design, Core machine and Assembler format
-    - include very simple prototype assembler
-    - include very simple prototype debugger
-    - include very simple prototype profiler
+    - including very simple prototype assembler
+    - including very simple prototype debugger
+    - including very simple prototype profiler
 
 
 ### Default processor architecture
@@ -51,7 +51,7 @@ Summary
 
 ### Limitation
   - using slow container(Data.Array) for simple implementation.
-  - assembler error messages are unkindness.
+  - assembly error messages are unkindness.
 
 
 ### Acknowledge
@@ -60,7 +60,7 @@ Summary
     [powerpc](https://hackage.haskell.org/package/powerpc),
     [ministg](https://hackage.haskell.org/package/ministg),
     [hython](https://github.com/mattgreen/hython).
-  - and many processors, many tools.
+  - and many processors, many tools. Thank you.
 
 
 Quick tour
@@ -280,4 +280,3 @@ evalStep (NEG   ra rb)    = uniopInst (neg) ra rb
 ```haskell
          <|> inst2 NEG  "neg" greg greg
 ```
-
