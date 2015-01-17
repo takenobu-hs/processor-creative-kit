@@ -1,7 +1,8 @@
 name:                processor-creative-kit
-version:             0.1.0.0
+version:             0.0.1.0
 synopsis:            processor-creative-kit
 description:         you can create your processor.
+homepage:            https://github.com/takenobu-hs/processor-creative-kit
 license:             BSD3
 license-file:        LICENSE
 author:              Takenobu Tani
@@ -11,6 +12,10 @@ category:            Hardware
 build-type:          Simple
 extra-source-files:  README.md
 cabal-version:       >=1.10
+
+source-repository head
+  type:     git
+  location: https://github.com/takenobu-hs/processor-creative-kit.git
 
 library
   exposed-modules:   Processor.Core
