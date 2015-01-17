@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 
-module Processor.Tool.InteractiveDebugger (
+module Language.Pck.Tool.InteractiveDebugger (
         -- * Interactive Debugger driver
           runIdbIO
         -- * Interactive Debugger usage
@@ -22,10 +22,10 @@ import qualified Data.Attoparsec.ByteString.Char8 as P8
 import Control.Applicative ((<$>), (<*>), (<|>), (<$), (*>))
 
 
-import Processor.Core.Instruction
-import Processor.Core.Memory
-import Processor.Core.State
-import Processor.Tool.Debugger
+import Language.Pck.Cpu.Instruction
+import Language.Pck.Cpu.Memory
+import Language.Pck.Cpu.State
+import Language.Pck.Tool.Debugger
 
 
 ----------------------------------------

@@ -2,7 +2,7 @@
 {-# OPTIONS -Wall #-}
 
 
-module Processor.Core.State (
+module Language.Pck.Cpu.State (
         -- * Evaluation monad (State monad)
         EvalCpu
         -- * Cpu state type
@@ -38,10 +38,10 @@ module Processor.Core.State (
 
 import Control.Monad.State
 
-import Processor.Core.Config
-import Processor.Core.Instruction
-import Processor.Core.Register
-import Processor.Core.Memory
+import Language.Pck.Cpu.Config
+import Language.Pck.Cpu.Instruction
+import Language.Pck.Cpu.Register
+import Language.Pck.Cpu.Memory
 
 
 ----------------------------------------
@@ -64,7 +64,7 @@ data ResultStat = RsNormal      -- ^ normal result
 ----------------------------------------
 -- | cpu state (processor internal state)
 --
---   result type from 'Processor.Core.run'.
+--   result type from 'Language.Pck.Cpu.run'.
 --
 --   get each values by 'pcFromCpuState', 'grFromCpuState', 'flFromCpuState',
 --     'imemFromCpuState', 'dmemFromCpuState', 'dumpCpuState'

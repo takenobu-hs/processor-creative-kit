@@ -2,7 +2,7 @@
 {-# OPTIONS -Wall #-}
 
 
-module Processor.Tool (
+module Language.Pck.Tool (
         -- * Assembler
           parseInst
         , parseInstFile
@@ -22,11 +22,11 @@ module Processor.Tool (
         , ProfMode(..)
   ) where
 
-import Processor.Tool.Assembler (parseInst, parseInstFile)
-import Processor.Tool.Debugger (runDbg, runDbgIO
-                               ,DbgTrc(..), DbgBrk(..), DbgOrd(..), TrcLog)
-import Processor.Tool.InteractiveDebugger (runIdbIO)
-import Processor.Tool.Profiler (runProfIO, runProf, prof, ProfMode(..))
+import Language.Pck.Tool.Assembler (parseInst, parseInstFile)
+import Language.Pck.Tool.Debugger (runDbg, runDbgIO
+                                  ,DbgTrc(..), DbgBrk(..), DbgOrd(..), TrcLog)
+import Language.Pck.Tool.InteractiveDebugger (runIdbIO)
+import Language.Pck.Tool.Profiler (runProfIO, runProf, prof, ProfMode(..))
 
 
 

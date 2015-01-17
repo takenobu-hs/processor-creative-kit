@@ -2,7 +2,7 @@
 {-# OPTIONS -Wall #-}
 
 
-module Processor.Core (
+module Language.Pck.Cpu (
         -- * Run processor
           run
         -- * Instruction set
@@ -22,13 +22,13 @@ module Processor.Core (
         , dumpCpuState
   ) where
 
-import Processor.Core.Instruction (Inst(..), GReg(..), FCond(..))
-import Processor.Core.Memory (InstImage, DataImage)
-import Processor.Core.State (CpuState,
-                             pcFromCpuState, grFromCpuState, flFromCpuState,
-                             imemFromCpuState, dmemFromCpuState,
-                             dumpCpuState)
-import Processor.Core.Execution (run)
+import Language.Pck.Cpu.Instruction (Inst(..), GReg(..), FCond(..))
+import Language.Pck.Cpu.Memory (InstImage, DataImage)
+import Language.Pck.Cpu.State (CpuState,
+                               pcFromCpuState, grFromCpuState, flFromCpuState,
+                               imemFromCpuState, dmemFromCpuState,
+                               dumpCpuState)
+import Language.Pck.Cpu.Execution (run)
 
 
 

@@ -2,7 +2,7 @@
 {-# OPTIONS -Wall #-}
 
 
-module Processor.Core.Execution (
+module Language.Pck.Cpu.Execution (
         -- * Running processor
           run
         , evalProg
@@ -12,10 +12,10 @@ import Control.Monad.State
 import Data.Bits ((.&.), (.|.), complement, shift, xor)
 import Data.Word
 
-import Processor.Core.Instruction
-import Processor.Core.Register
-import Processor.Core.Memory
-import Processor.Core.State
+import Language.Pck.Cpu.Instruction
+import Language.Pck.Cpu.Register
+import Language.Pck.Cpu.Memory
+import Language.Pck.Cpu.State
 
 
 ----------------------------------------

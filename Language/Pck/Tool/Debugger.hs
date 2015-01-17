@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 
-module Processor.Tool.Debugger (
+module Language.Pck.Tool.Debugger (
         -- * Debugger driver
           runDbg
         , runDbgIO
@@ -22,11 +22,11 @@ import qualified Data.ByteString.Char8 as B
 import Text.Printf (printf)
 import Data.List (intercalate)
 
-import Processor.Core.Instruction
-import Processor.Core.Memory
-import Processor.Core.Register
-import Processor.Core.State
-import Processor.Core.Execution
+import Language.Pck.Cpu.Instruction
+import Language.Pck.Cpu.Memory
+import Language.Pck.Cpu.Register
+import Language.Pck.Cpu.State
+import Language.Pck.Cpu.Execution
 
 
 

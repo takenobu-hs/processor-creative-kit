@@ -2,7 +2,7 @@
 {-# OPTIONS -Wall #-}
 
 
-module Processor.Core.Config (
+module Language.Pck.Cpu.Config (
         -- * Configuration
           CpuConfig(..)
         , cpuConfig

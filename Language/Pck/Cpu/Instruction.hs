@@ -2,7 +2,7 @@
 {-# OPTIONS -Wall #-}
 
 
-module Processor.Core.Instruction (
+module Language.Pck.Cpu.Instruction (
         -- * Instructin set type
           Inst(..)
         , GReg(..)

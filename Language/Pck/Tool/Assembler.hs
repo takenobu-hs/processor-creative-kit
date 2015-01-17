@@ -4,7 +4,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 
-module Processor.Tool.Assembler (
+module Language.Pck.Tool.Assembler (
         -- * Assembler driver
           parseInst
         , parseInstFile
@@ -26,7 +26,7 @@ import Data.List (elemIndex, sortBy)
 import Data.Char (toLower)
 
 -- instruction
-import Processor.Core.Instruction
+import Language.Pck.Cpu.Instruction
 
 
 
@@ -264,7 +264,7 @@ skipRangeComment = do skipSpaces
 --
 -- Parse Example:
 --
--- text to 'Processor.Core.Instruction.Inst' data type
+-- text to 'Language.Pck.Cpu.Instruction.Inst' data type
 --
 -- >  text               ->   Inst data type
 -- >  ----------------------------------------

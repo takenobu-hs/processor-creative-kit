@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 
-module Processor.Tool.Profiler (
+module Language.Pck.Tool.Profiler (
         -- * Profiler driver
           runProf
         , runProfIO
@@ -18,8 +18,8 @@ import qualified Data.Map as Map
 import Data.Function (on)
 import Text.Printf (printf)
 
-import Processor.Core.Memory
-import Processor.Tool.Debugger
+import Language.Pck.Cpu.Memory
+import Language.Pck.Tool.Debugger
 
 
 ----------------------------------------

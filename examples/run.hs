@@ -10,8 +10,8 @@
 module Main where
 
 import System.Environment(getArgs)
-import Processor.Core
-import Processor.Tool
+import Language.Pck.Cpu
+import Language.Pck.Tool
 
 
 main :: IO ()

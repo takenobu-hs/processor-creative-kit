@@ -2,13 +2,13 @@
 {-# OPTIONS -Wall #-}
 
 
-module Processor.Core.Memory (
+module Language.Pck.Cpu.Memory (
         -- * Abstraction Memory type
           InstImage
         , DataImage
 
         -- * Implementation dependent types and functions
-        -- | It's better to use Processor.Core.State functions.
+        -- | It's better to use Language.Pck.Cpu.State functions.
 
         -- ** internal types
         , ImemArray
@@ -35,8 +35,8 @@ module Processor.Core.Memory (
 
 import Data.Array (Array, listArray, (//), (!), elems, assocs)
 
-import Processor.Core.Config
-import Processor.Core.Instruction
+import Language.Pck.Cpu.Config
+import Language.Pck.Cpu.Instruction
 
 
 ----------------------------------------

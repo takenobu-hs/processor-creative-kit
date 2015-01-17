@@ -2,7 +2,7 @@
 {-# OPTIONS -Wall #-}
 
 
-module Processor.Core.Register (
+module Language.Pck.Cpu.Register (
         -- * Note
         -- $note
 
@@ -26,11 +26,11 @@ module Processor.Core.Register (
 
 import Data.Array (Array, Ix,  listArray, (//), (!), elems)
 
-import Processor.Core.Instruction
+import Language.Pck.Cpu.Instruction
 
 -- $note
 -- This is implementation dependent module.
--- It's better to use Processor.Core.State functions.
+-- It's better to use Language.Pck.Cpu.State functions.
 
 ----------------------------------------
 -- general purpose register implementation
