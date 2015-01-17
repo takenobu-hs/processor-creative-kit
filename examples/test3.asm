@@ -1,47 +1,24 @@
+/*
+ * example3: for loop structure
+ *  sum = 0;
+ *  for (i=1; i<=10; i++) {sum = sum + i;}
+ */
 
+	/* sum = 0 */
+	mov	r0, 0		# sum = 0
 
-# 0
-	MOV 	R0, 10  
-      	MOV 	R1, 11  
- 	MOV 	R2, 12 
-        MOV 	R3, 13   
-	MOV 	R4, 14
+	/* for (i=1; i<=10; i++) {sum = sum + i;} */
+	mov	r1, 1		# i = 1;
+	mov	r2, 10		# loop condition
+	mov	r3, 1		# loop variable incrementer
 
-	MOV 	R5, 15 
-  	MOV 	R6, 16 
-	MOV 	R7, 17 
-	NOP
-	NOP
+	/* loop head */
+	cmp	r1, r2		# flag = compare(i, 10)
+	b	gt, 4		# if (flag == gt) goto pc+4  (to halt)
 
+	add	r0, r0, r1	# sum = sum + i
+	add	r1, r1, r3	# i++
+	jmp	-4		# goto pc-4  (to loop head)
 
-# 10
-	MOV	R5, 0
-	MOV	R6, 7
-	MOV	R7, 1
-	ST	M(R5), R5
-	LD	R4, M(R5)
-	add	r5, r5, r7
-	cmp	r5, r6
-	b	ne, -4
-	nop
-	nop
-
-# 20
-	mov	r1, 30
-	call	r1
-	mov	r6,606
-	mov	r5,0xcafe
 	halt
-    	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-
-# 30
-	mov	r7, 707
-	ret
-
-
 
