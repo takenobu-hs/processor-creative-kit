@@ -65,7 +65,7 @@ evalStep :: Inst -> EvalCpu ResultStat
 evalStep NOP              = incPc
 evalStep HALT             = return RsHalt
 
-evalStep (MOVI  reg imm)  = uniopInst (const imm) reg reg
+evalStep (MOVI  reg imm)  = movimm reg imm
 evalStep (MOV   ra rb)    = uniopInst (id) ra rb
 evalStep (MOVPC ra)       = movpc ra
 
@@ -124,6 +124,11 @@ ret :: EvalCpu ResultStat
 ret = do reg <- readGReg R0
          updatePc reg
 
+
+-- mov simple
+movimm :: GReg -> Int -> EvalCpu ResultStat
+movimm reg imm = do updateGReg reg imm
+                    incPc
 
 -- read pc
 movpc :: GReg -> EvalCpu ResultStat
