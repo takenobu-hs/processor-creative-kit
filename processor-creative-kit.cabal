@@ -18,18 +18,18 @@ source-repository head
   location: https://github.com/takenobu-hs/processor-creative-kit.git
 
 library
-  exposed-modules:   Processor.Core
-                     Processor.Core.Instruction
-                     Processor.Core.Config
-                     Processor.Core.Execution
-                     Processor.Core.State
-                     Processor.Core.Register
-                     Processor.Core.Memory
-                     Processor.Tool
-                     Processor.Tool.Assembler
-                     Processor.Tool.Debugger
-                     Processor.Tool.InteractiveDebugger
-                     Processor.Tool.Profiler
+  exposed-modules:   Language.Pck.Cpu
+                     Language.Pck.Cpu.Instruction
+                     Language.Pck.Cpu.Config
+                     Language.Pck.Cpu.Execution
+                     Language.Pck.Cpu.State
+                     Language.Pck.Cpu.Register
+                     Language.Pck.Cpu.Memory
+                     Language.Pck.Tool
+                     Language.Pck.Tool.Assembler
+                     Language.Pck.Tool.Debugger
+                     Language.Pck.Tool.InteractiveDebugger
+                     Language.Pck.Tool.Profiler
   -- other-modules:       
   other-extensions:  OverloadedStrings
   build-depends:     base >=4.7 && <4.8,
