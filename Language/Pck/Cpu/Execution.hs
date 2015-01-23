@@ -11,6 +11,7 @@ module Language.Pck.Cpu.Execution (
 import Control.Monad.State
 import Data.Bits ((.&.), (.|.), complement, shift, xor)
 import Data.Word
+import Text.Printf (printf)
 
 import Language.Pck.Cpu.Instruction
 import Language.Pck.Cpu.Register
@@ -93,8 +94,8 @@ evalStep (LD    ra rb)    = load ra rb
 evalStep (ST    ra rb)    = store ra rb
 
 evalStep UNDEF            = do pc <- readPc
-                               return $ RsErr ("undefined instruction at pc = "
-                                                 ++ show pc)
+                               return $ RsErr $ printf
+                                 "undefined instruction at pc = %d (0x%x)" pc pc
 
 ----------------------------------------
 --  instruction behavior utility
