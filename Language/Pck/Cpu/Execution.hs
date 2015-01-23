@@ -114,14 +114,17 @@ branchRI fcond ad  = do flags <- readFlags
                            then jumpRI ad
                            else incPc
 
+linkReg :: GReg
+linkReg = minBound::GReg  -- default if R0
+
 call :: GReg -> EvalCpu ResultStat
 call reg = do pc   <- readPc
               reg' <- readGReg reg
-              updateGReg R0 (pc+1)
+              updateGReg linkReg (pc+1)
               updatePc reg'
 
 ret :: EvalCpu ResultStat
-ret = do reg <- readGReg R0
+ret = do reg <- readGReg linkReg
          updatePc reg
 
 
