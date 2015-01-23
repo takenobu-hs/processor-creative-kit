@@ -118,14 +118,14 @@ linkReg :: GReg
 linkReg = minBound::GReg  -- default if R0
 
 call :: GReg -> EvalCpu ResultStat
-call reg = do pc   <- readPc
-              reg' <- readGReg reg
+call reg = do pc  <- readPc
+              val <- readGReg reg
               updateGReg linkReg (pc+1)
-              updatePc reg'
+              updatePc val
 
 ret :: EvalCpu ResultStat
-ret = do reg <- readGReg linkReg
-         updatePc reg
+ret = do val <- readGReg linkReg
+         updatePc val
 
 
 -- mov simple
@@ -141,33 +141,33 @@ movpc reg = do pc <- readPc
 
 -- load and store
 load :: GReg -> GReg -> EvalCpu ResultStat
-load ra rb = do rb' <- readGReg rb
-                ra' <- readDmem rb'
-                updateGReg ra ra'
+load ra rb = do vb <- readGReg rb
+                va <- readDmem vb
+                updateGReg ra va
                 incPc
 
 store :: GReg -> GReg -> EvalCpu ResultStat
-store ra rb = do (ra', rb') <- readGReg2 ra rb
-                 updateDmem ra' rb' 
+store ra rb = do (va, vb) <- readGReg2 ra rb
+                 updateDmem va vb 
                  incPc
 
 -- arithmetic
 cmpRR :: GReg -> GReg -> EvalCpu ResultStat
-cmpRR ra rb = do (ra', rb') <- readGReg2 ra rb
-                 updateFlag FLZ (ra' == rb')
-                 updateFlag FLC (ra' <  rb')
+cmpRR ra rb = do (va, vb) <- readGReg2 ra rb
+                 updateFlag FLZ (va == vb)
+                 updateFlag FLC (va <  vb)
                  incPc
 
 
 -- operation
 biopInst :: (Int -> Int -> Int) -> GReg -> GReg -> GReg -> EvalCpu ResultStat
-biopInst op ra rb rc= do (rb', rc') <- readGReg2 rb rc
-                         updateGReg ra (rb' `op` rc')
+biopInst op ra rb rc= do (vb, vc) <- readGReg2 rb rc
+                         updateGReg ra (vb `op` vc)
                          incPc
 
 uniopInst :: (Int -> Int) -> GReg -> GReg -> EvalCpu ResultStat
-uniopInst op ra rb = do rb' <- readGReg rb
-                        updateGReg ra (op rb')
+uniopInst op ra rb = do vb <- readGReg rb
+                        updateGReg ra (op vb)
                         incPc
 
 -- primitive operation
