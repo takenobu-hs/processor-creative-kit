@@ -2,9 +2,9 @@
 {-# OPTIONS -Wall #-}
 
 {-
-  trace example
+  trace example:
 
-  % runhaskell trace.hs  test.asm
+    $ runhaskell examples/trace.hs  examples/test0.asm
 -}
 
 module Main where
@@ -16,8 +16,8 @@ import Language.Pck.Tool
 main :: IO ()
 main = do (file:_) <- getArgs
           insts <- parseInstFile file
-          runDbgIO [TrcInst, TrcReg] []  [(0, insts)] []
---        runDbgIO [TrcInst]         []  [(0, insts)] []
+          runDbgIO [TrcInst]         []  [(0, insts)] []
+--        runDbgIO [TrcInst, TrcReg] []  [(0, insts)] []
 
 
 

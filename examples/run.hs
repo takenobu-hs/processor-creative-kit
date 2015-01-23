@@ -2,9 +2,9 @@
 {-# OPTIONS -Wall #-}
 
 {-
-  run example
+  run example:
 
-  % runhaskell run.hs  test.asm
+    $ runhaskell examples/run.hs  examples/test0.asm
 -}
 
 module Main where

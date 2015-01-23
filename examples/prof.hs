@@ -2,9 +2,9 @@
 {-# OPTIONS -Wall #-}
 
 {-
-  profile example
+  profile example:
 
-  % runhaskell profile.hs  test.asm
+    $ runhaskell examples/prof.hs  examples/test0.asm
 -}
 
 module Main where
