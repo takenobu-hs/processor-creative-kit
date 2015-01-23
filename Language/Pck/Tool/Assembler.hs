@@ -22,12 +22,11 @@ import Control.Applicative
 import qualified Data.ByteString.Char8 as B
 
 -- List
-import Data.List (elemIndex, sortBy)
+import Data.List (elemIndex, sortBy, elemIndices)
 import Data.Char (toLower)
 
 -- instruction
 import Language.Pck.Cpu.Instruction
-
 
 
 ------------------------------------------------------------
@@ -42,9 +41,11 @@ import Language.Pck.Cpu.Instruction
 -- >  [MOVI R0 1,HALT]
 --
 parseInst :: B.ByteString -> [Inst]
-parseInst inp = case (parseOnly file (B.map toLower inp)) of
+parseInst inp = case (parseOnly file inp') of
                   Right x -> x
-                  _       -> error "parseInst: parse error"
+                  _       -> parseInstAnalyze $ removeComments inp'
+                where inp' = B.map toLower inp
+
 
 -- | parse instructions from file
 --
@@ -71,7 +72,7 @@ instLine :: ParseInst
 instLine = do skipSpaces
               a <- inst
               skipSpaces
-              endOfLine <|> skipLineComment <|> skipRangeComment
+              endOfLine <|> skipLineComment <|> skipRangeComment <|> endOfInput
               return a
 
 ------------------------------------------------------------
@@ -232,11 +233,25 @@ delimComma = do skipSpaces
                 char8 ','
                 skipSpaces
 
-
-
 ------------------------------------------------------------
 -- comment and empty line
 ------------------------------------------------------------
+-- comment
+strCmntLine, strCmntRangeBeg, strCmntRangeEnd :: B.ByteString
+strCmntLine = "#"
+strCmntRangeBeg = "/*"
+strCmntRangeEnd = "*/"
+
+lineComment :: Parser String
+lineComment = do string strCmntLine
+                 manyTill P8.anyChar endOfLine
+
+rangeComment :: Parser String
+rangeComment = do string strCmntRangeBeg
+                  manyTill P8.anyChar (string strCmntRangeEnd)
+
+-- skip empty elements
+
 skipElements :: Parser ()
 skipElements = do many (skipLineComment <|> skipRangeComment <|> skipEmptyLine)
                   return ()
@@ -246,18 +261,62 @@ skipEmptyLine :: Parser ()
 skipEmptyLine = do skipSpaces >> endOfLine
                    return ()
 
--- comment
+-- skip line comment and range comment
 skipLineComment :: Parser ()
-skipLineComment =  do skipSpaces
-                      string "#" >> manyTill P8.anyChar endOfLine
-                      skipSpaces
+skipLineComment =  do skipSpaces >> lineComment
                       return ()
 
 skipRangeComment :: Parser ()
-skipRangeComment = do skipSpaces
-                      string "/*" >> manyTill P8.anyChar (string "*/")
-                      skipSpaces
+skipRangeComment = do skipSpaces >> rangeComment >> skipSpaces
                       return ()
+
+
+------------------------------------------------------------
+-- analyzing utility to generate error line number
+--    (because, attoparsec is fast but less info.)
+------------------------------------------------------------
+-- line-by-line parser
+parseInstAnalyze :: B.ByteString -> [Inst]
+parseInstAnalyze = map parseEachLine . extractNonEmptyLine
+
+parseEachLine :: (Int, B.ByteString) -> Inst
+parseEachLine (n, inp) = case (parseOnly instLine inp) of
+                           Right x -> x
+                           _       -> error $ "parseInst: parse error at line "
+                                              ++ show n ++ " : " ++ show inp
+
+extractNonEmptyLine :: B.ByteString -> [(Int, B.ByteString)]
+extractNonEmptyLine = filter (\(_,x) -> isNonEmptyLine x) . zip [1..] . B.lines
+
+isNonEmptyLine :: B.ByteString -> Bool
+isNonEmptyLine = not . B.all (`B.elem` " \t\t")
+
+
+removeComments :: B.ByteString -> B.ByteString
+removeComments inp = case (parseOnly commentParse inp) of
+                       Right x -> x
+                       _       -> error "removeComments: parse error"
+
+commentParse :: Parser B.ByteString
+commentParse = do a <- many (lineCommentEol <|> rangeCommentEol <|> normalLine)
+                  return $ B.concat a
+
+normalLine :: Parser B.ByteString
+normalLine = do a <- P8.anyChar
+                return $ B.pack [a]
+
+-- preserve end-of-line in comments
+lineCommentEol :: Parser B.ByteString
+lineCommentEol = do lineComment
+                    return "\n"
+
+rangeCommentEol :: Parser B.ByteString
+rangeCommentEol = do a <- rangeComment
+                     return $ B.pack (extractEol a)
+
+extractEol :: String -> String
+extractEol cs = replicate len '\n'
+                  where len = length $ elemIndices '\n' cs
 
 
 -- $parsenote
