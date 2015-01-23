@@ -28,6 +28,9 @@ import Data.Char (toLower)
 -- instruction
 import Language.Pck.Cpu.Instruction
 
+-- strict evaluation
+import Control.DeepSeq (force)
+
 
 ------------------------------------------------------------
 -- driver
@@ -55,7 +58,8 @@ parseInst inp = case (parseOnly file inp') of
 -- >  [MOVI R0 1,HALT]
 --
 parseInstFile :: FilePath -> IO [Inst]
-parseInstFile f = B.readFile f >>= (return . parseInst)
+parseInstFile f = do a <- B.readFile f
+                     return $ force (parseInst a)  -- error check before run
 
 
 ------------------------------------------------------------

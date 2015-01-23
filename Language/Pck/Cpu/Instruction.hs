@@ -10,6 +10,7 @@ module Language.Pck.Cpu.Instruction (
   ) where
 
 import Data.Array (Ix)
+import Control.DeepSeq (NFData, rnf)
 
 
 ----------------------------------------
@@ -58,6 +59,8 @@ data Inst = NOP                    -- ^ no operation
           | UNDEF                  -- ^ undefined
           deriving (Show, Eq)
 
+-- to use deepseq for assembler
+instance NFData Inst where rnf x = seq x ()
 
 
 -- | General purpose registers.
