@@ -153,31 +153,34 @@ traceReg = do stat <- get
 
 
 traceLoad :: EvalCpu TrcLog
-traceLoad =  do pc <- readPc
-                inst <- fetchInst
-                case inst of
-                  LD _ reg -> do ad <- readGReg reg
-                                 return $ pprSIIInst "TrcLoad:\tload-ad : "
-                                            ad pc inst
-                  _        -> return ""
+traceLoad = traceAddress isLoadInst "TrcLoad:\tload-ad : "
 
 traceStore :: EvalCpu TrcLog
-traceStore =  do pc <- readPc
-                 inst <- fetchInst
-                 case inst of
-                   ST reg _ -> do ad <- readGReg reg
-                                  return $ pprSIIInst "TrcStore:\tstore-ad : "
-                                             ad pc inst
-                   _        -> return ""
+traceStore = traceAddress isStoreInst "TrcStore:\tstore-ad : "
 
 traceCall :: EvalCpu TrcLog
-traceCall = do pc <- readPc
-               inst <- fetchInst
-               case inst of
-                 CALL reg -> do ad <- readGReg reg
-                                return $ pprSIIInst "TrcCall:\ttarget : "
-                                           ad pc inst
-                 _        -> return ""
+traceCall = traceAddress isCallInst "TrcCall:\ttarget : "
+
+traceAddress :: (Inst -> Maybe GReg) -> String -> EvalCpu TrcLog
+traceAddress prd str =  do pc <- readPc
+                           inst <- fetchInst
+                           case (prd inst) of
+                             Just reg -> do ad <- readGReg reg
+                                            return $ pprSIIInst str ad pc inst
+                             _        -> return ""
+
+isLoadInst :: Inst -> Maybe GReg
+isLoadInst (LD _ reg) = Just reg
+isLoadInst _          = Nothing
+
+isStoreInst :: Inst -> Maybe GReg
+isStoreInst (ST reg _) = Just reg
+isStoreInst _          = Nothing
+
+isCallInst :: Inst -> Maybe GReg
+isCallInst (CALL reg) = Just reg
+isCallInst _          = Nothing
+
 
 traceBranch :: EvalCpu TrcLog
 traceBranch = do pc <- readPc
@@ -256,24 +259,24 @@ data DbgOrd = BEQ  -- ^ equal
 checkBreak :: [DbgBrk] -> ResultStat -> EvalCpu ResultStat
 checkBreak [] res    = return res
 checkBreak dbgbrk res = do b <- mapM breakOne dbgbrk
-                           if (RsDbgBrk `elem` b)
-                             then return RsDbgBrk else return res
+                           return $ if (RsDbgBrk `elem` b)
+                                      then RsDbgBrk else res
 
 breakOne :: DbgBrk -> EvalCpu ResultStat
 breakOne (BrkNon)   = return RsNormal
 breakOne (BrkOne)   = return RsDbgBrk
 
 breakOne (BrkPc o v) = do pc <- readPc
-                          if (ordFunc o) pc v then return RsDbgBrk
-                                              else return RsNormal
+                          return $ if (ordFunc o) pc v
+                                     then RsDbgBrk else RsNormal
 
 breakOne (BrkGReg reg o v) = do reg' <- readGReg reg
-                                if (ordFunc o) reg' v then return RsDbgBrk
-                                                      else return RsNormal
+                                return $ if (ordFunc o) reg' v
+                                           then RsDbgBrk else RsNormal
 
 breakOne (BrkDmem ad o v) = do mem <- readDmem ad
-                               if (ordFunc o) mem v then return RsDbgBrk
-                                                    else return RsNormal
+                               return $ if (ordFunc o) mem v
+                                          then RsDbgBrk else RsNormal
 
 ordFunc :: DbgOrd -> (Int -> Int -> Bool)
 ordFunc BEQ = (==)
