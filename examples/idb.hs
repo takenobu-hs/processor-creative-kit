@@ -5,6 +5,20 @@
   idb example:
 
     $ runhaskell examples/idb.hs  examples/test0.asm
+    (idb) s
+    (idb) info reg
+    (idb) x/8 0x10
+    (idb) p *0x10
+    (idb) p *0x10 = 0x5
+    (idb) b 0x4
+    (idb) watch *0x80 != 10
+    (idb) watch pc > 3
+    (idb) watch r7 == 3
+    (idb) info b
+    (idb) c
+    (idb) help
+    (idb) q
+
 -}
 
 
