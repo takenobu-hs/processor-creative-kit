@@ -1,4 +1,3 @@
-
 How to use API
 ==============
 
@@ -7,12 +6,12 @@ see also [haskell package document](https://hackage.haskell.org/package/processo
 
 Contents
 --------
-  - [Use API] (#Use API)
-   1. [simple run] (#simple run)
+  - Use API
+   1. simple run
      - run
      - run with initial data memory
      - run with assembly file
-   2. [advanced run] (#advanced run)
+   2. advanced run
      - tracing run
      - breaking run
      - profiling run
@@ -25,13 +24,14 @@ Use API
 (i) simple run
 ---------------------
 
-### run
+### `run` - run
 code:
-```haskell
+
+~~~~ {.haskell}
 % ghci
 > import Language.Pck.Cpu
 > run [(0, [MOVI R0 20, HALT])] []
-```
+~~~~
 
 result:
 ```
@@ -40,7 +40,7 @@ gr : [20,0,0,0,0,0,0,0]
 fl : [False,False]
 ```
 
-### run with initial data memory
+### `run` - run with initial data memory
 
 code:
 ```haskell
@@ -62,7 +62,7 @@ fl : [False,False]
 ```
 
 
-### run with assembly file
+### `parseInstFile`, `run` - run with assembly file
 
 code:
 ```haskell
@@ -84,7 +84,7 @@ run [(0, testpro)] []
 (ii) advanced run
 ---------------------
 
-### tracing run
+### `runDbg`, `runDbgIO` - tracing run
 
 code:
 ```haskell
@@ -117,7 +117,7 @@ TrcInst:        pc : 5  HALT
 
 
 
-### breaking run
+### `runDbg`, `runDbgIO` - breaking run
 
 code:
 ```haskell
@@ -134,7 +134,7 @@ TrcInst:        pc : 1  MOVI R5 101
 
 
 
-### profiling run
+### `prof`, `runProfIO` - profiling run
 
 code:
 ```haskell
@@ -175,7 +175,7 @@ Memory load address profile:
 
 
 
-### interactive debugger
+### `runIdbIO` - interactive debugger
 
 code:
 ```haskell
@@ -211,5 +211,4 @@ TrcInst:        pc : 5  HALT
 
 (idb) q
 ```
-
 

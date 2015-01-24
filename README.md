@@ -3,55 +3,22 @@ Processor-creative-kit
 
 This is a [haskell package](https://hackage.haskell.org/package/processor-creative-kit) for playing processor.
 
-You can create your processor with your own instruction set.
+You can create your processors with your own instruction set and cpu simulator and development tools.
 
 enjoy! :smiley:
 
 
-Contents
---------
-  - [Summary] (#summary)
-  - [Quick tour] (#quick-tour)
-   1. [install] (#install)
-   2. [run examples] (#run examples)
-     - simple run
-     - tracing run
-     - profiling run
-     - interactive debugger
-   3. and more...
-     - how to use API.
-     - how to create your processor.
-
 Summary
 -------
 
-### Feature
+Feature
   - easy try, easy modify
-  - Cpu/
-    - a purely functional core (without IO)  (you can embed it anywhere)
+  - a purely functional CPU core (without IO)  (you can embed it anywhere)
+  - including very simple prototype assembler
+  - including very simple prototype debugger
+  - including very simple prototype profiler
 
-  - Tool/
-    - using monadic parser (Attoparsec)
-    - independent design, Cpu core and Assembler format
-    - including very simple prototype assembler
-    - including very simple prototype debugger
-    - including very simple prototype profiler
-
-
-### Default processor architecture
-  - Harvard architecture. (instruction and data memories are splited)
-  - fixed length instruction (word length)
-  - word addressing (no byte addressing)
-  - ideal immediate lengh (settable word immediate by 1 instruction)
-  - no MMU, cache, privilege level, interruption, I/O, and any
-
-
-### Limitation
-  - using slow container(Data.Array) for simple implementation.
-  - assembly error messages are unkindness.
-
-
-### Acknowledgements
+Acknowledgements
   - I was inspired from these packages:
   [HARM](https://hackage.haskell.org/package/HARM),
     [powerpc](https://hackage.haskell.org/package/powerpc),
@@ -60,90 +27,160 @@ Summary
   - and many processors, many tools. Thank you.
 
 
+
+-------------------------------------------------
+
 Quick tour
 ======================
 
-(i) install
------------
+### (i) install
 
 To expand source code in your working directory:
 
-```
-$ cd YOUR_WORK_DIRECTORY
-$ cabal unpack @@@
-```
+    $ cd YOUR_WORK_DIRECTORY
+    $ cabal unpack processor-creative-kit
 
 or
 
-
-```
-$ tar xvzf @@@.tar.gz
-```
+    $ tar xvzf processor-creative-kit-X.X.X.X.tar.gz
 
 Then, install the dependent packages:
 
-```
-$ cabal install --only-dependencies
-```
+    $ cabal install --only-dependencies
 
 
-(ii) run examples
------------------
+### (ii) run examples
 
-### run
-```
-$ runhaskell examples/run.hs examples/test0.asm
-```
+**run**
+
+    $ runhaskell examples/run.hs examples/test0.asm
 
 result:
-```
-@@@
-```
+
+    ~~~
+    pc : 3
+    gr : [0,100,200,300,0,0,0,0]
+    fl : [False,False]
+    dm : [(0,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])]
+    ~~~
 
 
-### tracing run
-```
-$ runhaskell examples/trace.hs examples/test0.asm
-```
+**tracing run**
+
+    $ runhaskell examples/trace.hs examples/test0.asm
+
+    ~~~
+    TrcInst:        pc : 0x0        MOVI R1 100
+    
+    TrcInst:        pc : 0x1        MOVI R2 200
+    
+    TrcInst:        pc : 0x2        ADD R3 R1 R2
+    
+    TrcInst:        pc : 0x3        HALT
+    ~~~
 
 
-### profiling run
-```
-$ runhaskell examples/prof.hs examples/test0.asm
-```
+**profiling run**
+
+    $ runhaskell examples/prof.hs examples/test0.asm
+
+    ~~~
+    instruction profile:
+    
+      MOVI  2
+      ADD   1
+      HALT  1
+    
+      total 4
+    
+    
+    Call target profile:
+    
+      address       count
+    (snip)
+    ~~~
 
 
+**interactive debugger**
 
-### interactive debugger
-```
-$ runhaskell examples/idb.hs examples/test0.asm
+    $ runhaskell examples/idb.hs examples/test0.asm
 
-@@@@@@
-(idb) run
-TrcInst:        pc : 0  MOVI R4 100
+    ~~~
+    For help, type "help".
+    
+    (idb) run
+    TrcInst:        pc : 0x0        MOVI R1 100
+    
+    TrcInst:        pc : 0x1        MOVI R2 200
+    
+    TrcInst:        pc : 0x2        ADD R3 R1 R2
+    
+    TrcInst:        pc : 0x3        HALT
+    
+    (idb) info reg
+    pc : 3
+    gr : [0,100,200,300,0,0,0,0]
+    fl : [False,False]
+    
+    (idb) x/8 0
+    0x00000000: 0x00000000 0x00000000 0x00000000 0x00000000
+    0x00000004: 0x00000000 0x00000000 0x00000000 0x00000000
+    
+    (idb) b 1
+    Num  Enb What
+    1    y   PC == 1  (PC == 0x1)
+    
+    (idb) run
+    TrcInst:        pc : 0x0        MOVI R1 100
+    
+    (idb) s
+    TrcInst:        pc : 0x1        MOVI R2 200
+    
+    (idb) s
+    TrcInst:        pc : 0x2        ADD R3 R1 R2
+    
+    (idb) help
+    List of commands:
+    
+    q       -- Exit debugger
+    help    -- Print list of commands
+    run     -- Start debugged program
+    s       -- Step program
+    c       -- Continue program being debugged
+    x       -- Examin memory: x(/COUNT) ADDRESS
+    info reg        -- List of registers
+    disas   -- Disassemble: disassemble (ADDRESS)
+    info b  -- Status of breakpoints
+    disable -- Disable breakpoint: disable NUMBER
+    enable  -- Enable breakpoint: enable NUMBER
+    delete  -- Delete breakpoint: delete NUMBER
+    b       -- Set breakpoint: b ADDRESS
+    watch   -- Set a watchpoint. example:
+                 data memory -- watch *0x80 != 10
+                 pc          -- watch pc > 3
+                 register    -- watch r7 == 3
+    p       -- Print memory value: p *ADDRESS
+    p       -- Set memory value: p *ADDRESS = VALUE
+    
+    (idb) q
+    ~~~
 
-TrcInst:        pc : 1  MOVI R5 101
+    
 
-(idb) info reg
-pc : 2
-gr : [0,0,0,0,100,101,0,0]
-fl : [False,False]
 
-(idb) x/8 0
-0x00000000: 0x00000000 0x00000000 0x00000000 0x00000000
-0x00000004: 0x00000000 0x00000000 0x00000000 0x00000000
+-------------------------------------------------
+Note
+-------
 
-(idb) s
-TrcInst:        pc : 2  LD R1 R4
+Default processor architecture
+  - Harvard architecture. (instruction and data memories are splited)
+  - fixed length instruction (word length)
+  - word addressing (no byte addressing)
+  - ideal immediate lengh (settable word immediate by 1 instruction)
+  - no MMU, cache, privilege level, interruption, I/O, and any
 
-(idb) s
-TrcInst:        pc : 3  LD R2 R5
 
-(idb) c
-TrcInst:        pc : 4  ADD R0 R1 R2
-
-TrcInst:        pc : 5  HALT
-
-(idb) q
-```
+Limitation
+  - using slow container(Data.Array) for simple implementation.
+  - assembly error messages are unkindness.
 
