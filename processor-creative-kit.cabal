@@ -1,7 +1,22 @@
 name:                processor-creative-kit
 version:             0.1.0.0
 synopsis:            a creation kit for instruction sets and cpu simulators and development tools
-description:         you can create your processor.
+description:
+    You can create your processor.
+    .
+    Feature:
+      .
+      - easy try, easy modify
+      .
+      - a purely functional CPU core (without IO)  (you can embed it anywhere)
+      .
+      - including very simple prototype assembler
+      .
+      - including very simple prototype debugger
+      .
+      - including very simple prototype profiler
+
+
 homepage:            https://github.com/takenobu-hs/processor-creative-kit
 license:             BSD3
 license-file:        LICENSE
