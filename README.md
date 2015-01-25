@@ -175,10 +175,10 @@ Note
 ----
 
 Default processor architecture
-  - Harvard architecture. (instruction and data memories are splited)
+  - Harvard architecture. (instruction and data memories are splitted)
   - fixed length instruction (word length)
-  - word addressing (no byte addressing)
-  - ideal immediate lengh (settable word immediate by 1 instruction)
+  - word addressing (not byte addressing)
+  - ideal immediate length (an immediate can be set by one instruction)
   - no MMU, cache, privilege level, interruption, I/O, and any
 
 

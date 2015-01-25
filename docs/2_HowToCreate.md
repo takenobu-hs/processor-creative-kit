@@ -14,7 +14,7 @@ Contents
     - modify a link register
     - modify instruction/data memory configurations
   - modify assembler formats
-    - modify commment formats
+    - modify comment formats
     - modify memory operand formats
     - modify immediate operand formats
     - modify register operand formats
@@ -173,7 +173,7 @@ cpuConfig = CpuConfig
 modify assembler formats
 ------------------------
 
-**modify commment formats**
+**modify comment formats**
 
 update following lines:  
 [Language/Pck/Tool/Assembler.hs]
