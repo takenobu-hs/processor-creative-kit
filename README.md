@@ -184,7 +184,6 @@ Default processor architecture
 
 Limitation
   - using slow container(Data.Array) for simple implementation.
-  - assembly error messages are unkindness.
 
 
 [1]: https://hackage.haskell.org/package/processor-creative-kit

@@ -2,6 +2,5 @@
 
 ## *Jan 2015*
 
-  * improve assembler error messages
 
 
