@@ -1,7 +1,7 @@
 How to use API
 ==============
 
-see also [haskell package document](https://hackage.haskell.org/package/processor-creative-kit).
+please see also [haskell package document](https://hackage.haskell.org/package/processor-creative-kit).
 
 
 Contents

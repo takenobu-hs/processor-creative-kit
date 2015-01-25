@@ -27,23 +27,17 @@ add instructions
 
 insert following lines:
 
-internal representation on machine(cpu)
-
-[Language/Pck/Cpu/Instruction.hs]
+[Language/Pck/Cpu/Instruction.hs] ... internal representation on machine(cpu)
 ```haskell
           | NEG   GReg GReg
 ```
 
-internal behavior on machine(cpu)
-
-[Language/Pck/Cpu/Execution.hs]
+[Language/Pck/Cpu/Execution.hs] ... internal behavior on machine(cpu)
 ```haskell
 evalStep (NEG   ra rb)    = uniopInst (*(-1)) ra rb
 ```
 
-assembler format
-
-[Language/Pck/Tool/Assembler.hs]
+[Language/Pck/Tool/Assembler.hs] ... assembler format
 ```haskell
          <|> inst2 NEG  "neg" greg greg
 ```
@@ -132,6 +126,7 @@ modify configurations
 
 **modify registers number**
 
+update following line:  
 [Language/Pck/Cpu/Instruction.hs]
 ```haskell
 data GReg = R0 | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9
@@ -140,6 +135,7 @@ data GReg = R0 | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9
 
 **modify registers name**
 
+update following line:  
 [Language/Pck/Cpu/Instruction.hs]
 ```haskell
 data GReg = EA | EB | EC | ED
@@ -147,10 +143,12 @@ data GReg = EA | EB | EC | ED
 
 **modify a link register**
 
+update following line:  
 [Language/Pck/Cpu/Execution.hs]
 ```haskell
 linkReg = minBound::GReg  -- default if R0
 ```
+to:  
 [Language/Pck/Cpu/Execution.hs]
 ```haskell
 linkReg = R7
@@ -158,6 +156,7 @@ linkReg = R7
 
 **modify instruction/data memory configurations**
 
+update following lines:  
 [Language/Pck/Cpu/Config.hs]
 ```haskell
 cpuConfig = CpuConfig
@@ -176,13 +175,14 @@ modify assembler formats
 
 **modify commment formats**
 
+update following lines:  
 [Language/Pck/Tool/Assembler.hs]
 ```haskell
 strCmntLine = "#"
 strCmntRangeBeg = "/*"
 strCmntRangeEnd = "*/"
 ```
-
+to:  
 ```haskell
 strCmntLine = "--"
 strCmntRangeBeg = "{-"
@@ -191,21 +191,24 @@ strCmntRangeEnd = "-}"
 
 **modify memory operand formats**
 
+update following line:  
 [Language/Pck/Tool/Assembler.hs]
 ```haskell
 mem = do string "m(" >> skipSpaces
-
 ```
+to:  
 ```haskell
 mem = do string "(" >> skipSpaces
 ```
 
 **modify immediate operand formats**
 
+update following lines:  
 [Language/Pck/Tool/Assembler.hs]
 ```haskell
 imm = immMinus <|> immHex <|> immNoSign
 ```
+to:  
 ```haskell
 imm = do char8 '$'    -- add here
          immMinus <|> immHex <|> immNoSign
@@ -213,13 +216,14 @@ imm = do char8 '$'    -- add here
 
 **modify register operand formats**
 
+update following lines:  
 [Language/Pck/Tool/Assembler.hs]
 ```haskell
 greg = do let reverseSortedGregNames = sortBy (flip compare) gregNames
           a <- choice $ map string reverseSortedGregNames
           return $ strToGReg a
 ```
-
+to:  
 ```haskell
 greg = do char8 '%'    -- add here
           let reverseSortedGregNames = sortBy (flip compare) gregNames

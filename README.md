@@ -1,7 +1,7 @@
 Processor-creative-kit
 ======================
 
-This is a [haskell package](https://hackage.haskell.org/package/processor-creative-kit) for playing processor.
+This is a [haskell package][1] for playing processor.
 
 You can create your processors with your own instruction set and cpu simulator and development tools.
 
@@ -20,15 +20,14 @@ Feature
 
 Acknowledgements
   - I was inspired from these packages:
-  [HARM](https://hackage.haskell.org/package/HARM),
-    [powerpc](https://hackage.haskell.org/package/powerpc),
-    [ministg](https://hackage.haskell.org/package/ministg),
-    [hython](https://github.com/mattgreen/hython).
+    [HARM][2],
+    [powerpc][3],
+    [ministg][4],
+    [hython][5].
   - and many processors, many tools. Thank you.
 
 
 
--------------------------------------------------
 
 Quick tour
 ======================
@@ -42,7 +41,7 @@ To expand source code in your working directory:
 
 or
 
-    $ tar xvzf processor-creative-kit-X.X.X.X.tar.gz
+    $ tar xvzf processor-creative-kit.tar.gz
 
 Then, install the dependent packages:
 
@@ -57,19 +56,18 @@ Then, install the dependent packages:
 
 result:
 
-    ~~~
     pc : 3
     gr : [0,100,200,300,0,0,0,0]
     fl : [False,False]
     dm : [(0,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])]
-    ~~~
 
 
 **tracing run**
 
     $ runhaskell examples/trace.hs examples/test0.asm
 
-    ~~~
+result:
+
     TrcInst:        pc : 0x0        MOVI R1 100
     
     TrcInst:        pc : 0x1        MOVI R2 200
@@ -77,14 +75,14 @@ result:
     TrcInst:        pc : 0x2        ADD R3 R1 R2
     
     TrcInst:        pc : 0x3        HALT
-    ~~~
 
 
 **profiling run**
 
     $ runhaskell examples/prof.hs examples/test0.asm
 
-    ~~~
+result:
+
     instruction profile:
     
       MOVI  2
@@ -98,14 +96,14 @@ result:
     
       address       count
     (snip)
-    ~~~
 
 
 **interactive debugger**
 
     $ runhaskell examples/idb.hs examples/test0.asm
 
-    ~~~
+result:
+
     For help, type "help".
     
     (idb) run
@@ -163,14 +161,18 @@ result:
     p       -- Set memory value: p *ADDRESS = VALUE
     
     (idb) q
-    ~~~
-
-    
 
 
--------------------------------------------------
+More documents
+--------------
+  - [How to use API (docs/1_HowToUseAPI.md)] [6]
+  - [How to create your processor (docs/2_HowToCreate.md)] [7]
+  - [hackage processor-creative-kit] [1]
+
+
+
 Note
--------
+----
 
 Default processor architecture
   - Harvard architecture. (instruction and data memories are splited)
@@ -183,4 +185,14 @@ Default processor architecture
 Limitation
   - using slow container(Data.Array) for simple implementation.
   - assembly error messages are unkindness.
+
+
+[1]: https://hackage.haskell.org/package/processor-creative-kit
+[2]: https://hackage.haskell.org/package/HARM
+[3]: https://hackage.haskell.org/package/powerpc
+[4]: https://hackage.haskell.org/package/ministg
+[5]: https://github.com/mattgreen/hython
+[6]: https://github.com/takenobu-hs/processor-creative-kit/blob/master/docs/1_HowToUseAPI.md
+[7]: https://github.com/takenobu-hs/processor-creative-kit/blob/master/docs/2_HowToCreate.md
+
 
