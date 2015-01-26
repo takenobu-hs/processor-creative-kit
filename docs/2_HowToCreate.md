@@ -189,7 +189,7 @@ modify configurations
 modify assembler formats
 ------------------------
 
-**modify comment formats**
+**modify comment formats `#`,`/*`,`*/` -> `--`,`{-`,`-}**
 
  update following lines:  
 
@@ -210,7 +210,7 @@ modify assembler formats
 
 
 
-**modify memory operand formats**
+**modify memory operand formats: `m()`->`()`**
 
  update following line:  
 
@@ -227,7 +227,7 @@ modify assembler formats
 
 
 
-**modify immediate operand formats**
+**modify immediate operand formats: `7`->`$7`**
 
  update following lines:  
 
@@ -245,7 +245,7 @@ modify assembler formats
 
 
 
-**modify register operand formats**
+**modify register operand formats: `r0`->`%r0`**
 
  update following lines:  
 
