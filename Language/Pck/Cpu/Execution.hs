@@ -41,7 +41,9 @@ import Language.Pck.Cpu.State
 -- >  ...
 --
 run :: InstImage -> DataImage -> CpuState
-run insts vals = execState (evalProg False) (initCpuStateMem insts vals)
+run insts vals = case runState (evalProg False) (initCpuStateMem insts vals) of
+                   (RsErr a, _) -> error a
+                   (_, x)       -> x
 
 -- | eval program
 --
@@ -55,7 +57,7 @@ evalProg isOneStep = loop
                     res  <- evalStep inst
                     case res of
                       RsHalt  -> return res
-                      RsErr e -> get >> error e
+                      RsErr _ -> return res
                       _       -> if isOneStep then return res else loop
 
 

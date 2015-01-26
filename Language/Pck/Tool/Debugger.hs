@@ -83,6 +83,8 @@ evalProgDbg dbgtrc dbgbrk = loop B.empty 0
                                checkRunLimit cnt
                                case res' of
                                  RsNormal -> loop trclog'' (cnt+1)
+                                 RsErr e  -> error $ show trclog'' ++ "\n\n"
+                                                     ++ e ++ "\n"
                                  _        -> return trclog''
 
 -- run limiter for inf loop
