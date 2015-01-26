@@ -28,22 +28,21 @@ Acknowledgements
 
 
 
-
 Quick tour
-======================
+----------
 
 ### (i) install
 
-To expand source code in your working directory:
+  To expand source code in your working directory:
 
     $ cd YOUR_WORK_DIRECTORY
     $ cabal unpack processor-creative-kit
 
-or
+  or
 
     $ tar xvzf processor-creative-kit.tar.gz
 
-Then, install the dependent packages:
+  Then, install the dependent packages:
 
     $ cabal install --only-dependencies
 
@@ -54,7 +53,7 @@ Then, install the dependent packages:
 
     $ runhaskell examples/run.hs examples/test0.asm
 
-result:
+  result:
 
     pc : 3
     gr : [0,100,200,300,0,0,0,0]
@@ -66,7 +65,7 @@ result:
 
     $ runhaskell examples/trace.hs examples/test0.asm
 
-result:
+  result:
 
     TrcInst:        pc : 0x0        MOVI R1 100
     
@@ -81,7 +80,7 @@ result:
 
     $ runhaskell examples/prof.hs examples/test0.asm
 
-result:
+  result:
 
     instruction profile:
     
@@ -102,7 +101,7 @@ result:
 
     $ runhaskell examples/idb.hs examples/test0.asm
 
-result:
+  result:
 
     For help, type "help".
     
