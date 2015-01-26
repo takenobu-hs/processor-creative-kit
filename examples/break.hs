@@ -1,8 +1,8 @@
 
 {-
-  brake example:
+  break example:
 
-    $ runhaskell examples/brake.hs  examples/test0.asm
+    $ runhaskell examples/break.hs  examples/test0.asm
 -}
 
 module Main where
