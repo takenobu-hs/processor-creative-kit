@@ -25,25 +25,25 @@ Use API
 ---------------------
 
 ### `run` - run
-code:
 
-  ~~~~ {.haskell}
+ code:
+  ~~~haskell
   % ghci
   > import Language.Pck.Cpu
   > run [(0, [MOVI R0 20, HALT])] []
-  ~~~~
+  ~~~
 
-result:
-  ```
+ result:
+  ~~~
   pc : 1
   gr : [20,0,0,0,0,0,0,0]
   fl : [False,False]
-  ```
+  ~~~
 
 ### `run` - run with initial data memory
 
-  code:
-  ```haskell
+ code:
+  ~~~haskell
   run [(0, testpro)]  [(100, [10, 20])]
 
   testpro  = [ MOVI R4 100
@@ -52,33 +52,33 @@ result:
              , LD   R2 R5
              , ADD  R0 R1 R2
              , HALT ]
-  ```
+  ~~~
 
-result:
-  ```
+ result:
+  ~~~
   pc : 5
   gr : [30,10,20,0,100,101,0,0]
   fl : [False,False]
-  ```
+  ~~~
 
 
 ### `parseInstFile`, `run` - run with assembly file
 
-code:
-  ```haskell
+ code:
+  ~~~haskell
   testpro = parseInstFile "test.asm"
   run [(0, testpro)] []
-```
+  ~~~
 
 [test.asm] file :
-  ```
+  ~~~
     mov  r4, 100
     mov  r5, 101
     ld   r1, m(r4)
     ld   r2, m(r5)
     add  r0, r1, r2
     halt
-  ```
+  ~~~
 
 
 (ii) advanced run
@@ -86,14 +86,14 @@ code:
 
 ### `runDbg`, `runDbgIO` - tracing run
 
-code:
-  ```haskell
+ code:
+  ~~~haskell
   runDbg [TrcPc, TrcInst] []  [(0, testpro)]  [(100, [10, 20])]
   runDbgIO [TrcPc, TrcInst] []  [(0, testpro)]  [(100, [10, 20])]
-  ```
+  ~~~
 
-result:
-  ```
+ result:
+  ~~~
   TrcPc:  pc : 0
   TrcInst:        pc : 0  MOVI R4 100
   
@@ -111,7 +111,7 @@ result:
   
   TrcPc:  pc : 5
   TrcInst:        pc : 5  HALT
-  ```
+  ~~~
 
 
 
@@ -119,34 +119,34 @@ result:
 
 ### `runDbg`, `runDbgIO` - breaking run
 
-code:
-  ```haskell
+ code:
+  ~~~haskell
   runDbg [TrcInst] [(BrkPc BEQ 2)]  [(0, testpro)]  [(100, [10, 20])]
   runDbgIO [TrcInst] [(BrkPc BEQ 2)]  [(0, testpro)]  [(100, [10, 20])]
-  ```
+  ~~~
 
-result:
-  ```
+ result:
+  ~~~
   TrcInst:        pc : 0  MOVI R4 100
   
   TrcInst:        pc : 1  MOVI R5 101
-  ```
+  ~~~
 
 
 
 ### `prof`, `runProfIO` - profiling run
 
-code:
-  ```haskell
+ code:
+  ~~~haskell
   prof [ProfInst] $ runDbg [TrcInst] []  [(0, testpro)]  [(100, [10, 20])]
   
   or
 
   runProfIO [ProfInst]  [(0, testpro)] [(100, [10, 20])]
-  ```
+  ~~~
 
-result:
-  ```
+ result:
+  ~~~
   instruction profile:
   
     MOVI  2
@@ -155,15 +155,15 @@ result:
     ADD   1
   
     total 6
-  ```
+  ~~~
 
-code:
-  ```haskell
+ code:
+  ~~~haskell
   runProfIO [ProfLoda]  [(0, testpro)] [(100, [10, 20])]
-  ```
+  ~~~
 
-result:
-  ```
+ result:
+  ~~~
   Memory load address profile:
   
     address       count
@@ -171,19 +171,19 @@ result:
     0x00000064    1
   
     total         2
-  ```
+  ~~~
 
 
 
 ### `runIdbIO` - interactive debugger
 
-code:
-  ```haskell
+ code:
+  ~~~haskell
   runIdbIO [TrcInst] [(BrkPc BEQ 2)]  [(0, testpro)]  [(100, [10, 20])]
-  ```
+  ~~~
 
-interactive command and result:
-  ```
+ interactive command and result:
+  ~~~
   (idb) run
   TrcInst:        pc : 0  MOVI R4 100
   
@@ -210,5 +210,5 @@ interactive command and result:
   TrcInst:        pc : 5  HALT
   
   (idb) q
-  ```
+  ~~~
 
