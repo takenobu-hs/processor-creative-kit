@@ -28,8 +28,8 @@ import Data.Char (toLower)
 -- instruction
 import Language.Pck.Cpu.Instruction
 
--- strict evaluation
 import Control.DeepSeq (force)
+import Data.Either (rights, lefts)
 
 
 ------------------------------------------------------------
@@ -43,9 +43,9 @@ import Control.DeepSeq (force)
 -- >  > parseInst (B.pack "mov r0,1\n halt\n")
 -- >  [MOVI R0 1,HALT]
 --
-parseInst :: B.ByteString -> [Inst]
+parseInst :: B.ByteString -> Either [String] [Inst]
 parseInst inp = case (parseOnly file inp') of
-                  Right x -> x
+                  Right x -> Right x
                   _       -> parseInstAnalyze $ removeComments inp'
                 where inp' = B.map toLower inp
 
@@ -59,7 +59,10 @@ parseInst inp = case (parseOnly file inp') of
 --
 parseInstFile :: FilePath -> IO [Inst]
 parseInstFile f = do a <- B.readFile f
-                     return $ force (parseInst a)  -- error check before run
+                     case force (parseInst a) of
+                       Right x -> return x
+                       Left e  -> do mapM_ putStrLn e
+                                     error "parse error"
 
 
 ------------------------------------------------------------
@@ -280,13 +283,16 @@ skipRangeComment = do skipSpaces >> rangeComment >> skipSpaces
 --    (because, attoparsec is fast but less info.)
 ------------------------------------------------------------
 -- line-by-line parser
-parseInstAnalyze :: B.ByteString -> [Inst]
-parseInstAnalyze = map parseEachLine . extractNonEmptyLine
+parseInstAnalyze :: B.ByteString -> Either [String] [Inst]
+parseInstAnalyze inp = if null err then Right (rights insts) else Left err
+                         where insts = map parseEachLine
+                                     . extractNonEmptyLine $ inp
+                               err = lefts insts
 
-parseEachLine :: (Int, B.ByteString) -> Inst
+parseEachLine :: (Int, B.ByteString) -> Either String Inst
 parseEachLine (n, inp) = case (parseOnly instLine inp) of
-                           Right x -> x
-                           _       -> error $ "parseInst: parse error at line "
+                           Right x -> Right x
+                           Left _  -> Left $ "parseInst: parse error at line "
                                               ++ show n ++ " : " ++ show inp
 
 extractNonEmptyLine :: B.ByteString -> [(Int, B.ByteString)]
