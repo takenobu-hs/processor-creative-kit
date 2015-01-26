@@ -47,6 +47,7 @@ Quick tour
     $ cabal install --only-dependencies
 
 
+
 ### (ii) run examples
 
 **run**
@@ -160,6 +161,30 @@ Quick tour
     p       -- Set memory value: p *ADDRESS = VALUE
     
     (idb) q
+
+
+
+### (iii) add instructions
+
+**add an negative instruction (`neg r0,r1`)**
+
+  insert following lines:
+
+  [Language/Pck/Cpu/Instruction.hs] ... internal representation on machine(cpu)
+  ```haskell
+            | NEG   GReg GReg
+  ```
+
+  [Language/Pck/Cpu/Execution.hs] ... internal behavior on machine(cpu)
+  ```haskell
+  evalStep (NEG   ra rb)    = uniopInst (*(-1)) ra rb
+  ```
+
+  [Language/Pck/Tool/Assembler.hs] ... assembler format
+  ```haskell
+           <|> inst2 NEG  "neg" greg greg
+  ```
+
 
 
 More documents
