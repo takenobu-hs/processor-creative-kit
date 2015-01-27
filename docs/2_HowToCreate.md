@@ -1,5 +1,5 @@
-How to create your processor
-============================
+How to create your processors
+=============================
 
 Contents
 --------
@@ -9,8 +9,8 @@ Contents
     - add a register swap instruction (`swap r0,r1`)
     - add a memory copy instruction (`memcpy m(r0),m(r1)`)
   - modify configurations
-    - modify registers number
-    - modify registers name
+    - modify a number of registers
+    - modify register names
     - modify a link register
     - modify instruction/data memory configurations
   - modify assembler formats
@@ -128,7 +128,7 @@ add instructions
 modify configurations
 ---------------------
 
-**modify registers number**
+**modify a number of registers**
 
  update following line:  
 
@@ -139,7 +139,7 @@ modify configurations
 
 
 
-**modify registers name**
+**modify register names**
 
  update following line:  
 

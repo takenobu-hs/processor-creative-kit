@@ -1,9 +1,9 @@
 Processor-creative-kit
 ======================
 
-This is a [haskell package][1] for playing processor.
+This is a [haskell package][1] for playing processors.
 
-You can create your processors with your own instruction set and cpu simulator and development tools.
+You can create your processors with your own instruction set and cpu simulators and development tools.
 
 enjoy! :smiley:
 
@@ -14,9 +14,9 @@ Summary
 Feature
   - easy try, easy modify
   - a purely functional CPU core (without IO)  (you can embed it anywhere)
-  - including very simple prototype assembler
-  - including very simple prototype debugger
-  - including very simple prototype profiler
+  - including a very simple prototype assembler
+  - including a very simple prototype debugger
+  - including a very simple prototype profiler
 
 Acknowledgements
   - I was inspired from these packages:
@@ -33,7 +33,7 @@ Quick tour
 
 ### (i) install
 
-  To expand source code in your working directory:
+  To expand the source code in your working directory:
 
     $ cd YOUR_WORK_DIRECTORY
     $ cabal unpack processor-creative-kit
@@ -170,12 +170,12 @@ Quick tour
 
   insert following lines:
 
-  [Language/Pck/Cpu/Instruction.hs] ... internal representation on machine(cpu)
+  [Language/Pck/Cpu/Instruction.hs] ... internal representation on the cpu
   ```haskell
             | NEG   GReg GReg
   ```
 
-  [Language/Pck/Cpu/Execution.hs] ... internal behavior on machine(cpu)
+  [Language/Pck/Cpu/Execution.hs] ... internal behavior on the cpu
   ```haskell
   evalStep (NEG   ra rb)    = uniopInst (*(-1)) ra rb
   ```
@@ -189,8 +189,8 @@ Quick tour
 
 More documents
 --------------
-  - [How to use API (docs/1_HowToUseAPI.md)] [6]
-  - [How to create your processor (docs/2_HowToCreate.md)] [7]
+  - [How to use the API (docs/1_HowToUseAPI.md)] [6]
+  - [How to create your processors (docs/2_HowToCreate.md)] [7]
   - [hackage processor-creative-kit] [1]
 
 
@@ -203,11 +203,11 @@ Default processor architecture
   - fixed length instruction (word length)
   - word addressing (not byte addressing)
   - ideal immediate length (an immediate can be set by one instruction)
-  - no MMU, cache, privilege level, interruption, I/O, and any
+  - no FPU, MMU, cache, privilege level, interruption, I/O, and any
 
 
 Limitation
-  - using slow container(Data.Array) for simple implementation.
+  - using the slow container(Data.Array) for simple implementation.
 
 
 [1]: https://hackage.haskell.org/package/processor-creative-kit

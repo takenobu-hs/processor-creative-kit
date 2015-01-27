@@ -1,16 +1,16 @@
-How to use API
-==============
+How to use the API
+==================
 
-please see also [haskell package document](https://hackage.haskell.org/package/processor-creative-kit).
+Please see also the [haskell package document](https://hackage.haskell.org/package/processor-creative-kit).
 
 
 Contents
 --------
-  - Use API
+  - To use the API
    1. simple run
      - run
-     - run with initial data memory
-     - run with assembly file
+     - run with an initial data memory
+     - run with an assembly file
    2. advanced run
      - tracing run
      - breaking run
@@ -18,8 +18,8 @@ Contents
      - interactive debugger
 
 
-Use API
-=======
+To use the API
+==============
 
 (i) simple run
 ---------------------
@@ -40,7 +40,7 @@ Use API
   fl : [False,False]
   ~~~
 
-### `run` - run with initial data memory
+### `run` - run with an initial data memory
 
  code:
   ~~~haskell
@@ -62,7 +62,7 @@ Use API
   ~~~
 
 
-### `parseInstFile`, `run` - run with assembly file
+### `parseInstFile`, `run` - run with an assembly file
 
  code:
   ~~~haskell
