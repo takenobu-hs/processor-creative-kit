@@ -29,7 +29,7 @@ import Data.Char (toLower)
 import Language.Pck.Cpu.Instruction
 
 import Control.DeepSeq (force)
-import Data.Either (rights, lefts)
+import Data.Either (partitionEithers)
 
 
 ------------------------------------------------------------
@@ -46,7 +46,7 @@ import Data.Either (rights, lefts)
 parseInst :: B.ByteString -> Either [String] [Inst]
 parseInst inp = case (parseOnly file inp') of
                   Right x -> Right x
-                  _       -> parseInstAnalyze $ removeComments inp'
+                  Left _  -> parseInstAnalyze $ removeComments inp'
                 where inp' = B.map toLower inp
 
 
@@ -61,8 +61,7 @@ parseInstFile :: FilePath -> IO [Inst]
 parseInstFile f = do a <- B.readFile f
                      case force (parseInst a) of
                        Right x -> return x
-                       Left e  -> do mapM_ putStrLn e
-                                     error "parse error"
+                       Left e  -> mapM_ putStrLn e >> error "parse error"
 
 
 ------------------------------------------------------------
@@ -284,10 +283,9 @@ skipRangeComment = do skipSpaces >> rangeComment >> skipSpaces
 ------------------------------------------------------------
 -- line-by-line parser
 parseInstAnalyze :: B.ByteString -> Either [String] [Inst]
-parseInstAnalyze inp = if null err then Right (rights insts) else Left err
-                         where insts = map parseEachLine
+parseInstAnalyze inp = if null l then Right r else Left l
+                         where (l,r) = partitionEithers . map parseEachLine
                                      . extractNonEmptyLine $ inp
-                               err = lefts insts
 
 parseEachLine :: (Int, B.ByteString) -> Either String Inst
 parseEachLine (n, inp) = case (parseOnly instLine inp) of
