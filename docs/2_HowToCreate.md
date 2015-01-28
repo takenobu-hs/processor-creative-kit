@@ -189,7 +189,7 @@ modify configurations
 modify assembler formats
 ------------------------
 
-**modify comment formats `#`,`/*`,`*/` -> `--`,`{-`,`-}**
+**modify comment formats `#`,`/*`,`*/` -> `--`,`{-`,`-}`**
 
  update following lines:  
 
