@@ -70,7 +70,7 @@ To use the API
   run [(0, testpro)] []
   ~~~
 
-[test.asm] file :
+ [test.asm] file :
   ~~~
     mov  r4, 100
     mov  r5, 101
