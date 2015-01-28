@@ -210,19 +210,21 @@ modify assembler formats
 
 
 
-**modify memory operand formats: `m()`->`()`**
+**modify memory operand formats: `m(r0)`->`[r0]`**
 
  update following line:  
 
  [Language/Pck/Tool/Assembler.hs]
   ~~~haskell
-  mem = do string "m(" >> skipSpaces
+  strMemBeg = "m("
+  strMemEnd = ")"
   ~~~
 
  to:  
 
   ~~~haskell
-  mem = do string "(" >> skipSpaces
+  strMemBeg = "["
+  strMemEnd = "]"
   ~~~
 
 
@@ -233,14 +235,13 @@ modify assembler formats
 
  [Language/Pck/Tool/Assembler.hs]
   ~~~haskell
-  imm = immMinus <|> immHex <|> immNoSign
+  strImmPref = ""
   ~~~
 
  to:  
 
   ~~~haskell
-  imm = do char8 '$'    -- add here
-           immMinus <|> immHex <|> immNoSign
+  strImmPref = "$"
   ~~~
 
 
@@ -251,16 +252,12 @@ modify assembler formats
 
  [Language/Pck/Tool/Assembler.hs]
   ~~~haskell
-  greg = do let reverseSortedGregNames = sortBy (flip compare) gregNames
-            a <- choice $ map string reverseSortedGregNames
-            return $ strToGReg a
+  strGRegPref = ""
   ~~~
 
  to:  
 
   ~~~haskell
-  greg = do char8 '%'    -- add here
-            let reverseSortedGregNames = sortBy (flip compare) gregNames
-            a <- choice $ m
+  strGRegPref = "%"
   ~~~
 
