@@ -161,8 +161,12 @@ inst3 f op p1 p2 p3 = f <$> (string op >> delimSpace >> p1)
 -- operand patterns
 ------------------------------------------------------------
 -- general purpose register
+strGRegPref :: B.ByteString
+strGRegPref = ""
+
 greg :: Parser GReg
-greg = do let reverseSortedGregNames = sortBy (flip compare) gregNames
+greg = do string strGRegPref
+          let reverseSortedGregNames = sortBy (flip compare) gregNames
           a <- choice $ map string reverseSortedGregNames
           return $ strToGReg a
 
@@ -179,8 +183,12 @@ fcond = do a <- (string "eq" <|> string "ne"
            return $ strToFCond (B.unpack a)
 
 -- immediate
+strImmPref :: B.ByteString
+strImmPref = ""
+
 imm :: Parser Int
-imm = immMinus <|> immHex <|> immNoSign
+imm = do string strImmPref
+         immMinus <|> immHex <|> immNoSign
 
 immNoSign :: Parser Int
 immNoSign = do d <- P.takeWhile1 (inClass "0123456789")
@@ -198,10 +206,14 @@ immHex = do string "0x"
 
 
 -- memory operand
+strMemBeg, strMemEnd :: B.ByteString
+strMemBeg = "m("
+strMemEnd = ")"
+
 mem :: Parser GReg
-mem = do string "m(" >> skipSpaces
+mem = do string strMemBeg >> skipSpaces
          a <- greg
-         skipSpaces >> string ")"
+         skipSpaces >> string strMemEnd
          return a
 
 
