@@ -171,19 +171,19 @@ Quick tour
   insert following lines:
 
   [Language/Pck/Cpu/Instruction.hs] ... internal representation on the cpu
-  ```haskell
+  ~~~haskell
             | NEG   GReg GReg
-  ```
+  ~~~
 
   [Language/Pck/Cpu/Execution.hs] ... internal behavior on the cpu
-  ```haskell
+  ~~~haskell
   evalStep (NEG   ra rb)    = uniopInst (*(-1)) ra rb
-  ```
+  ~~~
 
   [Language/Pck/Tool/Assembler.hs] ... assembler format
-  ```haskell
+  ~~~haskell
            <|> inst2 NEG  "neg" greg greg
-  ```
+  ~~~
 
 
 
