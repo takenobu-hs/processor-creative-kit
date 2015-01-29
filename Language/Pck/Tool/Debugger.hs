@@ -4,7 +4,7 @@
 
 
 module Language.Pck.Tool.Debugger (
-        -- * Debugger driver
+        -- * Debugger drivers
           runDbg
         , runDbgIO
         , evalProgDbg
@@ -35,7 +35,7 @@ import Language.Pck.Cpu.Execution
 ----------------------------------------
 -- | debugging run
 --
--- Example: run with break condition. (break at pc == 1)
+-- Example: run with a break condition. (break at pc == 1)
 --
 -- >  > runDbg [] [(BrkPc BEQ 1)] [(0,[MOVI R0 7, MOVI R1 8, HALT])] []
 -- >  pc : 1
@@ -57,7 +57,7 @@ runDbg dbgtrc dbgbrk insts vals = runState (evalProgDbg dbgtrc dbgbrk)
                                     (initCpuStateMem insts vals)
 
 
--- | debugging run for IO stdout
+-- | debugging run for IO output
 --
 -- Example: run with trace output. (instruction trace)
 --
@@ -73,7 +73,7 @@ runDbgIO dbgtrc dbgbrk insts vals =
     let (trc, _) = runDbg dbgtrc dbgbrk insts vals
     in  putStr $ B.unpack trc
 
--- eval prog
+-- evaluate a program with debuggin
 evalProgDbg :: [DbgTrc] -> [DbgBrk] -> EvalCpu TrcLog
 evalProgDbg dbgtrc dbgbrk = loop B.empty 0
     where loop trclog cnt = do trclog' <- tracePre dbgtrc trclog
@@ -101,7 +101,7 @@ checkRunLimit n
 ----------------------------------------
 --  debug trace
 ----------------------------------------
--- | data type for 'runDbg' output log
+-- | data type for 'runDbg' log
 type TrcLog = B.ByteString
 
 -- | trace conditions for 'runDbg' or 'runDbgIO'

@@ -64,7 +64,7 @@ import Language.Pck.Tool.Debugger
 -- >  
 -- >  (idb) q
 --
--- see "help" command
+-- please see "help" command
 --
 runIdbIO :: [DbgTrc] -> [DbgBrk] -> InstImage -> DataImage -> IO ()
 runIdbIO dbgtrc dbgbrk insts vals = 
@@ -202,7 +202,7 @@ setDmem ad val = execState (updateDmem ad val)
 ----------------------------------------
 type BrkTable = [(Bool, DbgBrk)]
 
--- set, get, print BrkTable
+-- set, get, print the BrkTable
 setBrkTable :: [DbgBrk] -> BrkTable
 setBrkTable = zip (repeat True)
 
@@ -241,7 +241,7 @@ showDbgOrd BGT = ">"
 showDbgOrd BGE = ">="
 
 
--- add, delete, enable, disable element with BrkTable
+-- add, delete, enable, disable element with the BrkTable
 addBrkTable :: (Bool, DbgBrk) -> BrkTable -> BrkTable
 addBrkTable x xs = xs ++ [x]
 

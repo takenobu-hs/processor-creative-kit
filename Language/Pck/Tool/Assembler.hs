@@ -5,7 +5,7 @@
 
 
 module Language.Pck.Tool.Assembler (
-        -- * Assembler driver
+        -- * Assembler drivers
           parseInst
         , parseInstFile
         -- * Assembler parse examples
@@ -36,7 +36,7 @@ import Data.Either (partitionEithers)
 -- driver
 ------------------------------------------------------------
 
--- | parse instructions from ByteString
+-- | parse instructions from a ByteString data
 --
 -- Example:
 --
@@ -50,7 +50,7 @@ parseInst inp = case (parseOnly file inp') of
                 where inp' = B.map toLower inp
 
 
--- | parse instructions from file
+-- | parse instructions from a file
 --
 -- Example:
 --
@@ -343,7 +343,7 @@ extractEol cs = replicate len '\n'
 --
 -- Parse Example:
 --
--- text to 'Language.Pck.Cpu.Instruction.Inst' data type
+-- from text to the 'Language.Pck.Cpu.Instruction.Inst' data type
 --
 -- >  text               ->   Inst data type
 -- >  ----------------------------------------
@@ -372,10 +372,10 @@ extractEol cs = replicate len '\n'
 -- >  ld   r1, m(r2)     ->   LD    R1 R2
 -- >  st   m(r1), r2     ->   ST    R1 R2
 --
--- Comment description:
+-- Comment descriptions:
 --
--- >  # comment line
--- >  /* comment block */
+-- >  # a comment line
+-- >  /* a comment block */
 --
 
 

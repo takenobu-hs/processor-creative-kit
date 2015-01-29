@@ -8,9 +8,9 @@ module Language.Pck.Cpu.Memory (
         , DataImage
 
         -- * Implementation dependent types and functions
-        -- | It's better to use Language.Pck.Cpu.State functions.
+        -- | It's better to use the functions in Language.Pck.Cpu.State.
 
-        -- ** internal types
+        -- ** Internal types
         , ImemArray
         , DmemArray
         , IAddress
@@ -44,7 +44,7 @@ import Language.Pck.Cpu.Instruction
 ----------------------------------------
 type IAddress = Int
 
--- | instruction memory image
+-- | the instruction memory image
 -- 
 -- >  [(StartAddress, [Instruction1,  Instruction2, ...])]
 -- 
@@ -54,7 +54,7 @@ type IAddress = Int
 -- 
 type InstImage = [(IAddress, [Inst])]
 
--- | instruction memory array
+-- | the instruction memory array
 type ImemArray = Array IAddress Inst
 
 imemSize, imemMin, imemMax :: Int
@@ -62,25 +62,25 @@ imemSize = cfgImemSize  cpuConfig
 imemMin  = cfgImemStart cpuConfig
 imemMax  = imemMin + imemSize - 1
 
--- | initialize instruction memory
+-- | initialize the instruction memory
 initImem :: ImemArray
 initImem = listArray(imemMin, imemMax) $ replicate imemSize UNDEF
 
--- | preset instruction memory
+-- | preset the instruction memory
 presetImem :: InstImage -> ImemArray
 presetImem = foldl modifyImems initImem
 
--- | modify instruction memory
+-- | modify the instruction memory
 modifyImems :: ImemArray -> (IAddress, [Inst]) -> ImemArray
 modifyImems ary (start, insts) = ary // zip [start .. imemMax] insts
 
--- | fetch instruction from instruction memory
+-- | fetch an instruction from the instruction memory
 fetchImem :: ImemArray -> IAddress -> Inst
 fetchImem ary ad = ary ! ad'
     where ad' = ad `rem` (imemMax + 1)     -- wrap address
 
 
--- | get instruction memory image
+-- | get an instruction memory image
 getInstImage :: ImemArray -> InstImage
 getInstImage ary = [(ad, val)]
     where ary' = assocs ary
@@ -88,7 +88,7 @@ getInstImage ary = [(ad, val)]
           val = elems ary
 
 -- TODO efficiency implement
--- | extract instructions from instruction memory
+-- | extract instructions from the instruction memory
 extractImems :: InstImage -> IAddress -> Int -> [Inst]
 extractImems img ad cnt = take cnt $ drop beg vals
     where (start, vals):_ = img
@@ -102,7 +102,7 @@ extractImems img ad cnt = take cnt $ drop beg vals
 type DAddress = Int
 type DValue   = Int
 
--- | data memory image
+-- | the data memory image
 -- 
 -- >  [(StartAddress, [Data1,  Data2, ...])]
 -- 
@@ -113,36 +113,36 @@ type DValue   = Int
 -- 
 type DataImage = [(DAddress, [DValue])]
 
--- | data memory array
+-- | the data memory array
 type DmemArray = Array DAddress DValue
 dmemSize, dmemMin, dmemMax :: Int
 dmemSize = cfgDmemSize  cpuConfig
 dmemMin  = cfgDmemStart cpuConfig
 dmemMax  = dmemMin + dmemSize - 1
 
--- | initialize data memory
+-- | initialize the data memory
 initDmem :: DmemArray
 initDmem = listArray (dmemMin,dmemMax) $ replicate dmemSize 0
 
--- | preset data memory
+-- | preset the data memory
 presetDmem :: DataImage -> DmemArray
 presetDmem = foldl modifyDmems initDmem
 
--- | get data from data memory
+-- | get a data from the data memory
 getDmem :: DmemArray -> DAddress -> DValue
 getDmem ary ad = ary ! ad'
     where ad' = ad `rem` (dmemMax + 1)     -- wrap address
 
--- | modify data memory
+-- | modify the data memory
 modifyDmem :: DmemArray -> DAddress -> DValue -> DmemArray
 modifyDmem ary ad dat = ary // [(ad', dat)]
     where ad' = ad `rem` (dmemMax + 1)     -- wrap address
 
--- | modify data memory by values
+-- | modify the data memory by values
 modifyDmems :: DmemArray -> (DAddress, [DValue]) -> DmemArray
 modifyDmems ary (start, vals) = ary // zip [start .. dmemMax] vals
 
--- | get data memory image
+-- | get a data memory image
 getDataImage :: DmemArray -> DataImage
 getDataImage ary = [(ad, val)]
     where ary' = assocs ary
@@ -150,7 +150,7 @@ getDataImage ary = [(ad, val)]
           val = elems ary
 
 -- TODO range check! and efficiency implement
--- | extract data values from data memory
+-- | extract data values from the data memory
 extractDmems :: DataImage -> DAddress -> Int -> [DValue]
 extractDmems img ad cnt = take cnt $ drop beg vals
     where (start, vals):_ = img

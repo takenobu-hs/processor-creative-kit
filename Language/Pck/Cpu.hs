@@ -3,16 +3,16 @@
 
 
 module Language.Pck.Cpu (
-        -- * Run processor
+        -- * Run the processor
           run
-        -- * Instruction set
+        -- * The instruction set
         , Inst(..)
         , GReg(..)
         , FCond(..)
-        -- * Instruction and data memory image
+        -- * Instruction and data memory images
         , InstImage
         , DataImage
-        -- * Cpu state (processor internal state)
+        -- * Cpu states (processor internal states)
         , CpuState
         , pcFromCpuState
         , grFromCpuState

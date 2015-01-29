@@ -17,7 +17,7 @@ module Language.Pck.Cpu.State (
       , initCpuStateMem
         -- * Result type
       , ResultStat(..)
-        -- * Cpu state access
+        -- * access for the Cpu state
         -- ** PC(program counter)
       , readPc
       , updatePc
@@ -47,10 +47,10 @@ import Language.Pck.Cpu.Memory
 ----------------------------------------
 --  cpu state monad
 ----------------------------------------
--- | cpu eval monad
+-- | the cpu eval monad
 type EvalCpu a = State CpuState a
 
--- | result state
+-- | the result state
 data ResultStat = RsNormal      -- ^ normal result
                 | RsHalt        -- ^ cpu halt(stop)
                 | RsDbgBrk      -- ^ debugger triggered
@@ -62,9 +62,9 @@ data ResultStat = RsNormal      -- ^ normal result
 ----------------------------------------
 --  cpu state type
 ----------------------------------------
--- | cpu state (processor internal state)
+-- | the cpu state (processor internal state)
 --
---   result type from 'Language.Pck.Cpu.run'.
+--   This is the result type from 'Language.Pck.Cpu.run' function.
 --
 --   get each values by 'pcFromCpuState', 'grFromCpuState', 'flFromCpuState',
 --     'imemFromCpuState', 'dmemFromCpuState', 'dumpCpuState'
@@ -148,7 +148,7 @@ dumpCpuState s =
 ----------------------------------------
 --  initial state
 ----------------------------------------
--- | default CpuState
+-- | a default CpuState
 initCpuState :: CpuState
 initCpuState = CpuState
                  { state_pc = cfgStartPc cpuConfig
@@ -167,12 +167,12 @@ initCpuStateMem insts vals = initCpuState {state_imem = presetImem insts
 ----------------------------------------
 --  state utility
 ----------------------------------------
--- | read pc
+-- | read the pc
 
 readPc :: EvalCpu Int
 readPc = gets state_pc
 
--- | update pc
+-- | update the pc
 --
 -- Example:
 --
@@ -184,13 +184,13 @@ updatePc :: Int -> EvalCpu ResultStat
 updatePc pc = do modify $ \s -> s { state_pc = pc }
                  return RsNormal
 
--- | increment pc
+-- | increment the pc
 incPc :: EvalCpu ResultStat
 incPc = do pc <- readPc
            updatePc (pc + 1)
 
 
--- | read general purpose register
+-- | read a general purpose register
 --
 -- Example:
 --
@@ -207,7 +207,7 @@ readGReg2 :: GReg -> GReg -> EvalCpu (Int, Int)
 readGReg2 ra rb = do gr <- gets state_gr
                      return (getGReg gr ra, getGReg gr rb)
 
--- | update general purpose register
+-- | update a general purpose register
 --
 -- Example:
 --
@@ -234,7 +234,7 @@ updateGReg reg val = do cpu <- get
 readFlags :: EvalCpu FlagArray
 readFlags = gets state_fl
 
--- | update flag
+-- | update a flag
 --
 -- Example:
 --
@@ -250,14 +250,14 @@ updateFlag flag val = do cpu <- get
                          put cpu { state_fl = fl' }
 
 
--- | fetch instruction from instruction memory
+-- | fetch an instruction from the instruction memory
 fetchInst :: EvalCpu Inst
 fetchInst = do imem <- gets state_imem
                pc <- readPc
                return $ fetchImem imem pc
 
 
--- | read data value from data memory
+-- | read a data value from the data memory
 --
 -- Example:
 --
@@ -270,7 +270,7 @@ readDmem :: Int -> EvalCpu Int
 readDmem ad = do cpu <- get
                  return $ getDmem (state_dmem cpu) ad
 
--- | update data memory
+-- | update the data memory
 --
 -- Example:
 --

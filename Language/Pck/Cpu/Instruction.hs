@@ -3,7 +3,7 @@
 
 
 module Language.Pck.Cpu.Instruction (
-        -- * Instructin set type
+        -- * the instruction set type
           Inst(..)
         , GReg(..)
         , FCond(..)
@@ -16,14 +16,14 @@ import Control.DeepSeq (NFData, rnf)
 ----------------------------------------
 --  instruction set
 ----------------------------------------
--- | Instruction define.
+-- | the instruction definition.
 --
 --   You can create instructions as you like :-)
 --
 --   Operand order is Intel, ARM, MIPS, PowerPC,... order. 
 --   (opcode dst src1 src2)
 data Inst = NOP                    -- ^ no operation
-          | HALT                   -- ^ halt (stop processor)
+          | HALT                   -- ^ halt (stop the processor)
 
           | MOVI  GReg Int         -- ^ GReg <- Int
           | MOV   GReg GReg        -- ^ GReg <- GReg
@@ -59,18 +59,18 @@ data Inst = NOP                    -- ^ no operation
           | UNDEF                  -- ^ undefined
           deriving (Show, Eq)
 
--- to use deepseq for assembler
+-- to use deepseq for the assembler
 instance NFData Inst where rnf x = seq x ()
 
 
--- | General purpose registers.
+-- | the general purpose registers.
 --
 --   You can create registers as you like :-)
 data GReg = R0 | R1 | R2 | R3 | R4 | R5 | R6 | R7
               deriving (Show, Eq, Ord, Ix, Enum, Bounded)
 
 
--- | Flag conditions
+-- | the Flag conditions
 data FCond = FCEQ  -- ^ equal
            | FCNE  -- ^ not equal
            | FCLT  -- ^ little than

@@ -3,15 +3,15 @@
 
 
 module Language.Pck.Cpu.Config (
-        -- * Configuration
+        -- * The configuration
           CpuConfig(..)
         , cpuConfig
   ) where
 
 
--- | default configuration
+-- | the default configuration
 --
---   You can change configuration here.
+--   You can change the configuration here.
 cpuConfig :: CpuConfig
 cpuConfig = CpuConfig
             { cfgStartPc = 0
@@ -22,7 +22,7 @@ cpuConfig = CpuConfig
             }
 
 
--- | cpu configuration type
+-- | the cpu configuration type
 data CpuConfig = CpuConfig
                  { cfgStartPc   :: Int   -- ^ boot(start) pc
                  , cfgImemStart :: Int   -- ^ instruction memory start address

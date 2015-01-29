@@ -25,7 +25,7 @@ import Language.Pck.Tool.Debugger
 ----------------------------------------
 --  driver
 ----------------------------------------
--- | profile mode for 'prof', 'runProf' and 'runProfIO'
+-- | the profile mode for 'prof', 'runProf' and 'runProfIO'
 data ProfMode = ProfInst    -- ^ instruction profile
               | ProfPC      -- ^ pc profile
               | ProfCall    -- ^ call profile
@@ -35,7 +35,7 @@ data ProfMode = ProfInst    -- ^ instruction profile
               deriving Eq
 
 
--- | run profiler
+-- | run the profiler
 --
 -- Example: instruction count profile
 --
@@ -90,7 +90,7 @@ runProf profmd insts vals =
     in  prof profmd trc
 
 
--- | run profiler for IO stdout
+-- | run the profiler for IO output
 --
 -- Example:
 --
@@ -107,7 +107,7 @@ runProfIO :: [ProfMode] -> InstImage -> DataImage -> IO ()
 runProfIO profmd insts vals = putStr $ runProf profmd insts vals
 
 
--- | profiler body.
+-- | profile function
 --
 -- Example:
 --
@@ -147,7 +147,7 @@ profOne _         _      = ""
 
 
 ----------------------------------------
---  each profile and pretty print
+--  each profilings and pretty prints
 ----------------------------------------
 -- instruction count
 pprInstCounts :: B.ByteString -> String

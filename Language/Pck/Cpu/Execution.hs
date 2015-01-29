@@ -3,7 +3,7 @@
 
 
 module Language.Pck.Cpu.Execution (
-        -- * Running processor
+        -- * Run the processor
           run
         , evalProg
   ) where
@@ -22,7 +22,7 @@ import Language.Pck.Cpu.State
 ----------------------------------------
 --  simulation driver
 ----------------------------------------
--- | run simulation driver
+-- | run the processor
 --
 -- Example: simple run
 --
@@ -45,7 +45,7 @@ run insts vals = case runState (evalProg False) (initCpuStateMem insts vals) of
                    (RsErr a, _) -> error a
                    (_, x)       -> x
 
--- | eval program
+-- | evaluate a program
 --
 -- >
 -- >  run :: InstImage -> DataImage -> CpuState
