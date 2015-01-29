@@ -35,7 +35,7 @@ add instructions
 
  [Language/Pck/Cpu/Execution.hs] ... internal behavior on machine(cpu)
   ~~~haskell
-  evalStep (NEG   ra rb)    = uniopInst (*(-1)) ra rb
+  evalStep (NEG   ra rb)    = uniopInst (negate) ra rb
   ~~~
 
  [Language/Pck/Tool/Assembler.hs] ... assembler format
