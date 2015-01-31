@@ -1,5 +1,5 @@
 name:                processor-creative-kit
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            a creation kit for instruction sets and cpu simulators and development tools
 description:
     You can create your processors with your own instruction set and cpu simulator and development tools.
